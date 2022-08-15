@@ -1,0 +1,67 @@
+---
+# As upgrading a node  requires special attention,
+# this block uses an inventory on the fly with add_host
+# to prompt the user for hostname
+- hosts: localhost
+  gather_facts: yes
+  vars_prompt:
+  - name: target_host
+    prompt: "Specify which node to upgrade:"
+    private: no
+
+  tasks:
+    - add_host:
+        name: "{{ target_host }}"
+        groups: dynamically_created_hosts
+
+    - set_fact:
+        target_host: "{{ target_host }}"
+    
+# End of inventory on the fly block
+
+    - name: drain node
+      local_action:
+        module: shell
+        _raw_params: "kubectl --kubeconfig $KUBECONFIG drain {{ target_host }} --force --ignore-daemonsets --delete-emptydir-data"
+      become: false
+      register: node_drain_out
+
+    - name: set k8s_version_upgrade_eviction_seconds fact
+      set_fact:
+        k8s_version_upgrade_eviction_seconds: 45
+      run_once: true
+      when: k8s_version_upgrade_eviction_seconds is undefined
+
+    - name: allow some time for the evictions
+      pause:
+        seconds: "{{ k8s_version_upgrade_eviction_seconds }}"
+
+- hosts: dynamically_created_hosts
+  name: "Upgrading k0s version to {{ k0s_version }}"
+  become: yes
+  tasks:
+    - shell: k0s stop
+
+- hosts: dynamically_created_hosts
+  name: Download new version of k0s 
+  become: yes
+  roles:
+    - role: download
+      tags: download
+
+- hosts: dynamically_created_hosts
+  name: start the k0s service
+  become: yes
+  tasks:
+    - shell: k0s start 
+
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+  - name: uncordon node
+    local_action:
+      module: shell
+      _raw_params: "kubectl --kubeconfig $KUBECONFIG uncordon {{ target_host }}"
+    become: false
+
+    

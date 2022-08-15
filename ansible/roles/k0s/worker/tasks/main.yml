@@ -1,0 +1,28 @@
+---
+- name: Check if host is already a controller
+  shell: systemctl cat k0sworker.service
+  register: k0sworker
+  ignore_errors: yes
+
+
+- name: Write the k0s token file on worker
+  ansible.builtin.template:
+    src: worker-token.j2
+    dest: "{{ k0s_config_dir }}/worker-token"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0600
+
+- name: Create k0s worker service with install command
+  register: install_worker_cmd
+  command: k0s install worker --token-file {{ k0s_config_dir }}/worker-token --enable-cloud-provider=true {{ extra_args | default(omit) }}
+  changed_when: install_worker_cmd | length > 0
+  when: k0sworker is failed
+
+- name: Enable and check k0s service
+  become: true
+  ansible.builtin.systemd:
+    name: k0sworker
+    daemon_reload: yes
+    state: restarted
+    enabled: yes

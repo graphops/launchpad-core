@@ -1,0 +1,7 @@
+*.code-workspace
+.vscode
+ansible/.ansible_facts_cache
+*.log
+ansible/inventory/*
+!ansible/inventory/sample
+ansible/*/artifacts/
