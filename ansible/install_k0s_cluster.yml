@@ -3,9 +3,9 @@
   name: Download k0s on all nodes
   become: yes
   roles:
-    - role: download
+    - role: k0s/download
       tags: download
-    - role: prereq
+    - role: k0s/prereq
       tags: prereq
 
 - hosts: initial_controller

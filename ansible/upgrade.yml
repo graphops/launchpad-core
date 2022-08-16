@@ -46,7 +46,7 @@
   name: Download new version of k0s 
   become: yes
   roles:
-    - role: download
+    - role: k0s/download
       tags: download
 
 - hosts: dynamically_created_hosts
