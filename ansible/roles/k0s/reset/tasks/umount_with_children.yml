@@ -1,7 +1,6 @@
 # Originally created for k3s-ansible by @jeffspahr
 # <https://github.com/k3s-io/k3s-ansible/blob/master/roles/reset/tasks/umount_with_children.yml>
 ---
-
 - name: Get the list of mounted filesystems
   shell: set -o pipefail && cat /proc/mounts | awk '{ print $2}' | grep -E "^{{ mounted_fs }}"
   register: get_mounted_filesystems

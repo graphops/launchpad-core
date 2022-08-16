@@ -27,8 +27,6 @@
     - "{{ k0s_data_dir }}"
     - "{{ k0s_libexec_dir }}"
     - "{{ k0s_config_dir }}"
-    # - /var/lib/kubelet
-    # - /run/k0s
   loop_control:
     loop_var: mounted_fs
 
@@ -42,8 +40,6 @@
     - "{{ k0s_data_dir }}"
     - "{{ k0s_libexec_dir }}"
     - "{{ k0s_binary_dest }}"
-    # - /var/lib/kubelet
-    # - /run/k0s
     - "{{ systemd_dest }}/k0scontroller.service"
     - "{{ systemd_dest }}/k0sworker.service"
   retries: 5
@@ -54,5 +50,3 @@
 - name: daemon_reload
   become: true
   command: systemctl daemon-reload
-  # systemd:
-  #   daemon_reload: yes
