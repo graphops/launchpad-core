@@ -1,0 +1,116 @@
+---
+- name: Check if host is already a controller
+  shell: systemctl cat k0scontroller.service
+  register: k0scontroller
+  ignore_errors: yes
+
+- name: Create k0s initial controller service with install command
+  register: install_initial_controller_cmd
+  command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --enable-k0s-cloud-provider=true {{ extra_args | default(omit) }}
+  changed_when: install_initial_controller_cmd | length > 0
+  when: k0scontroller is failed
+
+- name: Setup custom environment variables for systemd unit
+  ansible.builtin.include_role:
+    name: env_setup
+
+- name: Enable and check k0s service
+  ansible.builtin.systemd:
+    name: k0scontroller
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: Wait for k8s apiserver
+  ansible.builtin.wait_for:
+    host: localhost
+    port: 6443
+    delay: 15
+    timeout: 300
+
+
+- name: Create worker join token
+  register: worker_join_token
+  command: k0s token create --role worker 
+  changed_when: worker_join_token | length > 0
+
+- name: Store worker join token
+  ansible.builtin.set_fact:
+    join_token_worker: "{{ worker_join_token.stdout }}"
+    cacheable: yes
+
+- name: Add k0s worker token to dummy host
+  ansible.builtin.add_host:
+    name: "worker_token_holder"
+    token: "{{ worker_join_token.stdout }}"
+
+- name: Print worker token
+  ansible.builtin.debug:
+    msg: "k0s worker join token is: {{ worker_join_token.stdout }}"
+
+- name: Create controller join token
+  register: controller_join_token
+  command: k0s token create --role controller 
+  changed_when: controller_join_token | length > 0
+
+- name: Store controller join token
+  ansible.builtin.set_fact:
+    join_token_controller: "{{ controller_join_token.stdout }}"
+    cacheable: yes
+
+- name: Add k0s controller token to dummy host
+  ansible.builtin.add_host:
+    name: "controller_token_holder"
+    token: "{{ controller_join_token.stdout }}"
+
+- name: Print controller token
+  ansible.builtin.debug:
+    msg: "k0s controller join token is: {{ controller_join_token.stdout }}"
+
+- name: Copy config file to user home directory
+  ansible.builtin.copy:
+    src: "{{ k0s_data_dir }}/pki/admin.conf"
+    dest: ~{{ ansible_user }}/k0s-kubeconfig.yml
+    remote_src: yes
+    owner: "{{ ansible_user }}"
+    mode: 0644
+
+- name: "Read a file content"
+  shell: |
+    cat ~{{ ansible_user }}/k0s-kubeconfig.yml
+  register: file_content1
+
+- name: "Print the file content to a console"
+  ansible.builtin.debug:
+    msg: "{{ file_content1.stdout }}"
+
+- name: Set controller IP in kubeconfig
+  ansible.builtin.replace:
+    path: ~{{ ansible_user }}/k0s-kubeconfig.yml
+    regexp: 'localhost'
+    replace: "{{ lb_address }}"
+
+
+- name: Set controller IP in kubeconfig
+  debug: 
+  
+- name: "Read a file content"
+  shell: |
+    cat ~{{ ansible_user }}/k0s-kubeconfig.yml
+  register: file_content
+
+- name: "Print the file content to a console"
+  ansible.builtin.debug:
+    msg: "{{ file_content.stdout }}"
+
+- name: Copy kubeconfig
+  ansible.builtin.fetch:
+    src: "~{{ ansible_user }}/k0s-kubeconfig.yml"
+    dest: "{{ artifacts_dir }}/k0s-kubeconfig.yml"
+    flat: yes
+    validate_checksum: no
+  become: no
+
+- name: "print kubeconfig command"
+  ansible.builtin.debug:
+    msg: "To use Cluster: export KUBECONFIG={{ artifacts_dir }}/k0s-kubeconfig.yml"
