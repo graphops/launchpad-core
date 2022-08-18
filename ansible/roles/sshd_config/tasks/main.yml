@@ -1,0 +1,25 @@
+---
+# tasks file for sshd config update
+- name: sshd configuration file update
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    insertbefore: EOF # End of the file
+    marker: "# {mark} ANSIBLE MANAGED BLOCK BY SYS ADMIN"
+    block: |
+      Port {{ hardened_ssh_port }}
+      PermitRootLogin no
+      PermitEmptyPasswords no
+      StrictModes yes
+      PasswordAuthentication no
+      AllowTcpForwarding no
+      ClientAliveCountMax 2
+      Compression no
+      LogLevel verbose
+      MaxAuthTries 3
+      MaxSessions 2
+      TCPKeepAlive no
+      X11Forwarding no
+      AllowAgentForwarding no
+    backup: yes
+    validate: /usr/sbin/sshd -T -f %s
+  notify: Restart SSHD
