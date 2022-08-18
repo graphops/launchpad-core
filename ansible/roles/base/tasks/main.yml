@@ -34,8 +34,8 @@
   block:
   - name: Make sure we have an "{{ main_user }}" group
     ansible.builtin.group:
-    name: "{{ main_user }}"
-    state: present
+      name: "{{ main_user }}"
+      state: present
 
   - name: Create user "{{ main_user }}" and make sudo
     ansible.builtin.user:
