@@ -35,17 +35,3 @@ tasks:
       #   # do real stuff
       #   echo "$ONE $TWO"
       - ansible-playbook launchpad-core/ansible/install_k0s_cluster.yml -i {{.INVENTORY_PATH}}
-    
-    base:
-      interactive: true # for interactive scripts
-      desc: installs needed apt packages and updated ssh config if/as needed
-      deps: []
-      summary: |
-        long form description of task
-
-        *this* area supports _markdown_
-      preconditions: [] # run commands to check 
-      vars:
-        INVENTORY_PATH: '{{.INVENTORY_PATH | default "inventory/sample/inventory.yml"}}'
-      cmds:
-        - ansible-playbook launchpad-core/ansible/site.yml -i {{.INVENTORY_PATH}}
