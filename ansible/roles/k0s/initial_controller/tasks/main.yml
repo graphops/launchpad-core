@@ -12,7 +12,7 @@
 
 - name: Setup custom environment variables for systemd unit
   ansible.builtin.include_role:
-    name: env_setup
+    name: k0s/env_setup
 
 - name: Enable and check k0s service
   ansible.builtin.systemd:
@@ -89,7 +89,14 @@
     path: ~{{ ansible_user }}/k0s-kubeconfig.yml
     regexp: 'localhost'
     replace: "{{ lb_address }}"
+  when: lb_address is defined
 
+- name: Set controller IP in kubeconfig
+  ansible.builtin.replace:
+    path: ~{{ ansible_user }}/k0s-kubeconfig.yml
+    regexp: 'localhost'
+    replace: "{{ ansible_host }}"
+  when: lb_address is not defined
 
 - name: Set controller IP in kubeconfig
   debug: 

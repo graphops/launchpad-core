@@ -13,25 +13,6 @@ tasks:
       *this* area supports _markdown_
     preconditions: [] # run commands to check 
     vars:
-      INVENTORY_PATH: '{{.INVENTORY_PATH | default "inventory/sample/inventory.yml"}}'
+      INVENTORY_PATH: '{{.INVENTORY_PATH | default "inventory/inventory.yml"}}'
     cmds:
-      # - |
-      #   set - {{ .CLI_ARGS }}
-      #   ONE=$1; shift
-      #   TWO=$1; shift
-
-      #   usage(){
-      #     echo "Invalid usage. Specify arguments: <one> <two>"
-      #     echo "<one> explanation of one"
-      #     echo "<two> explanation of two"
-      #     exit 1
-      #   }
-
-      #   if [ -z "$TWO" ]; then
-      #     usage
-      #   fi
-
-      #   set -x
-      #   # do real stuff
-      #   echo "$ONE $TWO"
       - ansible-playbook launchpad-core/ansible/install_k0s_cluster.yml -i {{.INVENTORY_PATH}}

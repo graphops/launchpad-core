@@ -1,0 +1,31 @@
+version: '3'
+
+tasks:
+  apply:
+    interactive: true
+    desc: Sync releases for a namespace
+    deps: []
+    summary: ""
+    cmds:
+      - |
+        set - {{ .CLI_ARGS }}
+        NAMESPACE=$1; shift
+
+        NS_DIR="launchpad-core/helmfiles/releases"
+
+        usage(){
+          echo "Invalid usage. Specify arguments: <namespace>"
+          echo "<namespace> Must be a valid namespace that exists in $NS_DIR"
+          exit 1
+        }
+
+        NAMESPACE_FILE_PATH="${NS_DIR}/${NAMESPACE}.yaml"
+
+        if [ -z "$NAMESPACE" ] || [ ! -f "$NAMESPACE_FILE_PATH" ]; then
+          usage
+        fi
+
+
+        set -x
+        # do real stuff
+        helmfile -f "$NAMESPACE_FILE_PATH" apply "$@"
