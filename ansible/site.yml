@@ -1,0 +1,11 @@
+- name: Initial host hardening
+  hosts: all
+  roles:
+    - role: base
+      become: true
+
+- name: Update sshd config
+  hosts: all
+  roles:
+    - role: sshd_config
+      become: true

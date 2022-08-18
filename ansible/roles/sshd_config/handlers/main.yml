@@ -1,0 +1,6 @@
+# When using handlers they are only triggered when the task that defines the notify trigger causes a change in the server.
+# The first time the replace task runs it will change the SSHD configuration file and so the restart will run. In subsequent executions - the task won’t cause any changes and won’t trigger the handler execution.
+- name: Restart SSHD
+  service:
+    name: sshd
+    state: restarted
