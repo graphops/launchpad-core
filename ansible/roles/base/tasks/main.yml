@@ -82,7 +82,7 @@
       validate: 'visudo -cf %s'
   when:
     # when main_user is not empty the all tasks in this block will run
-    - main_user is defined
+    - main_user != ansible_user
   tags:
     - main_user
     - ssh

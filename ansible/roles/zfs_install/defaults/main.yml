@@ -7,26 +7,11 @@ zfs_create_filesystems: false
 # Defines if ZFS pool(s) are created
 zfs_create_pools: false
 
-# Overwrite debian release
-# debian_release: 
-debian_use_backports: True
-
-# Defines Debian Backports Repo
-backports_internal_uri: https://deb.debian.org/debian
-backports_internal_components: "main contrib non-free"
-backports_internal_additional_packages:
-  - apt-transport-https
-
 # Install/Update zfs packates 
 # Set to false to avoid updates on runtime
 zfs_install_update: true
 
 # Defines if ZFS volumes(s) are created
-zfs_create_volumes: false
-zfs_debian_package_key: http://zfsonlinux.org/4D5843EA.asc
-zfs_debian_package_url: http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux
-zfs_debian_package_version: 6
-zfs_debian_package: "zfsonlinux_{{ zfs_debian_package_version }}_all.deb"
 zfs_enable_auto_snapshots: true
 
 # Defines if iscsitarget is installed to server iSCSI volumes
@@ -133,7 +118,7 @@ zfs_pools: []
   #   state: present
   #   # override global scrub cron job parameters per zpool
   #   scrub_cron:
-  #     # enable: False  # disable scrub cron job creation for this specific zpool
+  #     # enable: false  # disable scrub cron job creation for this specific zpool
   #     hour: 2
   #     weekday: sat
   # - name: SSD-TANK
@@ -155,7 +140,7 @@ zfs_pools: []
   #   type: mirror
   #   state: present
 
-# defines global scrub cron job parameters. Only applies when `zfs_enable_monitoring` is set to True.
+# defines global scrub cron job parameters. Only applies when `zfs_enable_monitoring` is set to true.
 zfs_pools_scrub_cron:
   minute: 0
   hour: 0
@@ -186,7 +171,7 @@ zfs_volumes: []
   #     - 192.168.202.0/24
   #   state: present
 
-zfs_enable_monitoring: False
+zfs_enable_monitoring: false
 
 # in percentage.
 zfs_monitoring_capacity_threshold: 80
