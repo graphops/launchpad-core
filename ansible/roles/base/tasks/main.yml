@@ -1,0 +1,96 @@
+- name: configure APT to skip downloading translations
+  shell: echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/99disable-translations
+
+- name: Update APT Cache
+  ansible.builtin.apt:
+    upgrade: dist # apt-get dist-upgrade
+    update_cache: yes
+    force_apt_get: yes
+  become_method: sudo
+  register: apt_status
+  ignore_errors: true
+
+- name: Force Update APT Cache
+  shell: apt upgrade -y
+  become_method: sudo
+  when: apt_status is failed
+
+- name: Install necessary packages with apt update
+  ansible.builtin.apt:
+    update_cache: yes
+    state: latest
+    pkg:
+      - curl
+      - jq 
+      - ntp
+      - smartmontools
+      - debsums 
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Task to create "{{ main_user }}" user and cp ssh keys
+  block:
+  - name: Make sure we have an "{{ main_user }}" group
+    ansible.builtin.group:
+    name: "{{ main_user }}"
+    state: present
+
+  - name: Create user "{{ main_user }}" and make sudo
+    ansible.builtin.user:
+      name: "{{ main_user }}"
+      shell: /bin/bash
+      groups:
+        - "{{ main_user }}"
+        - sudo
+      append: yes
+      state: present
+      createhome: yes
+    become: yes
+    register: user_details
+
+  - name: Creates ssh directory for "{{ main_user }}"
+    file:
+      path: "{{ user_details.home }}/.ssh"
+      state: directory
+      owner: "{{ main_user }}"
+      group: "{{ main_user }}"
+      mode: 0775
+
+  - name: Copy ssh file
+    copy:
+      src: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
+      remote_src: yes   
+      dest: "{{ user_details.home }}/.ssh/authorized_keys"
+      owner: "{{ main_user }}"
+      group: "{{ main_user }}"
+    when: main_user_ssh_key is undefined
+
+  - name: Copy ssh key
+    lineinfile:
+      path: "{{ user_details.home }}/.ssh/authorized_keys"
+      line: "{{ main_user_ssh_key }}"
+    when: main_user_ssh_key is defined
+
+  - name: Allow "{{ main_user }}" user to have passwordless sudo
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^"{{ main_user }}"'
+      line: "{{ main_user }} ALL=(ALL) NOPASSWD: ALL"
+      validate: 'visudo -cf %s'
+  when:
+    # when main_user is not empty the all tasks in this block will run
+    - main_user is defined
+  tags:
+    - main_user
+    - ssh
+
+- name: Remove useless packages from the cache
+  ansible.builtin.apt:
+    autoclean: yes
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
