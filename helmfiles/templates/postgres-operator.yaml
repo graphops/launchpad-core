@@ -2,9 +2,20 @@ repositories:
   - name: postgres-operator-charts
     url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 
-releases:
-  - name: postgres-operator
-    namespace: &namespace postgres-operator
-    chart: postgres-operator-charts/postgres-operator
-    version: 1.8.2
-    disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600
+# todo: document using the values hack to define templates
+values:
+  - template-default-namespace-name: &template-default-namespace-name postgres-operator
+  #### TEMPLATES FOR EACH RELEASE IN NAMESPACE
+  - template-default-release-postgres-operator: &template-default-release-postgres-operator
+      namespace: *template-default-namespace-name
+      chart: postgres-operator-charts/postgres-operator
+      version: 1.8.2
+      disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600
+      values:
+      - &template-default-values-postgres-operator {}
+  #### TEMPLATE FOR ALL RELEASES IN NAMESPACE
+  # template-default-<namespace>-releases
+  - template-default-ingress-releases: &template-default-postgres-operator
+      releases:
+        - name: postgres-operator
+          <<: *template-default-release-postgres-operator

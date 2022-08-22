@@ -11,9 +11,7 @@ values:
       chart: ingress-nginx/ingress-nginx
       version: 4.2.1
       values:
-      - &template-default-values-ingress-nginx
-        commonLabels:
-          someValue: true
+      - &template-default-values-ingress-nginx {}
   #### TEMPLATE FOR ALL RELEASES IN NAMESPACE
   # template-default-<namespace>-releases
   - template-default-ingress-releases: &template-default-ingress-releases

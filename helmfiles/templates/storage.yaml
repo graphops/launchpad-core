@@ -3,28 +3,57 @@ repositories:
     url: https://openebs.github.io/charts
   - name: openebs-zfslocalpv
     url: https://openebs.github.io/zfs-localpv
-  # - name: openebs-rawfile
-  #   git
+  - name: openebs-rawfilelocalpv
+    # url: git+https://github.com/openebs/rawfile-localpv@deploy/helm?ref=master: 
+    url: git+https://github.com/penebs/rawfile-localpv@deploy/charts?ref=master
+    # git+https://github.com/jetstack/cert-manager@deploy/charts?ref=v0.6.2&sparse=0
+
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
-releases: 
-  - name: openebs
-    namespace: &namespace "storage"
-    chart: openebs/openebs
-    version: 3.3.0
+# todo: document using the values hack to define templates
+values:
+  - template-default-namespace-name: &template-default-namespace-name storage
+  #### TEMPLATES FOR EACH RELEASE IN NAMESPACE
+  - template-default-release-openebs: &template-default-release-openebs
+      namespace: *template-default-namespace-name
+      chart: openebs/openebs
+      version: 3.3.0
+      values:
+      - &template-default-values-openebs {}
+          
+  - template-default-release-openebs-zfs: &template-default-release-openebs-zfs
+      namespace: *template-default-namespace-name
+      chart: openebs-zfslocalpv/zfs-localpv
+      version: 2.1.0
+      values:
+      - &template-default-values-openebs-zfs {}
 
-  - name: openebs-zfs
-    namespace: *namespace
-    chart: openebs-zfslocalpv/zfs-localpv
-    version: 2.1.0
+  - template-default-release-openebs-rawfilelocalpv: &template-default-release-openebs-rawfilelocalpv
+      namespace: *template-default-namespace-name
+      chart: openebs-rawfilelocalpv/rawfile-csi
+      # version: 4.2.1
+      values:
+      - &template-default-values-rawfilelocalpv {}
 
-  # - name: openebs-rawfile
-  #   namespace: *namespace
-  #   chart: openebs-rawfile/rawfile-csi
-  #   version: 0.7.0
+  - template-default-release-openebs-zfs-storageclass: &template-default-release-openebs-zfs-storageclass
+      namespace: *template-default-namespace-name
+      chart: graphops/resource-injector
+      version: 0.1.0
+      values:
+      - &template-default-values-openebs-zfs-storageclass {}
 
-  - name: openebs-zfs-storageclass
-    namespace: *namespace
-    chart: graphops/resource-injector
-    version: 0.1.0
+  #### TEMPLATE FOR ALL RELEASES IN NAMESPACE
+  # template-default-<namespace>-releases
+  - template-default-storage-releases: &template-default-storage-releases
+      releases:
+        - name: openebs
+          <<: *template-default-release-openebs
+        - name: openebs-zfs
+          <<: *template-default-release-openebs-zfs
+        - name: openebs-rawfilelocalpv
+          <<: *template-default-release-openebs-rawfilelocalpv
+        - name: openebs-zfs-storageclass
+          <<: *template-default-release-openebs-zfs-storageclass
+
+
