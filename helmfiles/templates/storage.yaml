@@ -3,8 +3,8 @@ repositories:
     url: https://openebs.github.io/charts
   - name: openebs-zfslocalpv
     url: https://openebs.github.io/zfs-localpv
-  - name: openebs-rawfile
-    url: https://openebs.github.io/rawfile-localpv
+  # - name: openebs-rawfile
+  #   git
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
@@ -19,10 +19,10 @@ releases:
     chart: openebs-zfslocalpv/zfs-localpv
     version: 2.1.0
 
-  - name: openebs-rawfile
-    namespace: *namespace
-    chart: openebs-rawfile/rawfile-csi
-    version: 0.7.0
+  # - name: openebs-rawfile
+  #   namespace: *namespace
+  #   chart: openebs-rawfile/rawfile-csi
+  #   version: 0.7.0
 
   - name: openebs-zfs-storageclass
     namespace: *namespace

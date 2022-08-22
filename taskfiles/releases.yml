@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  apply:
+  apply-namespace:
     interactive: true
     desc: Sync releases for a namespace
     deps: []
@@ -25,7 +25,14 @@ tasks:
           usage
         fi
 
-
         set -x
         # do real stuff
         helmfile -f "$NAMESPACE_FILE_PATH" apply "$@"
+
+  setup:
+    cmds:
+      - task releases:apply-namespace -- sealed-secrets
+      - task releases:apply-namespace -- storage
+      # - task releases:apply-namespace -- monitoring
+      # - task releases:apply-namespace -- ingress
+      # - task releases:apply-namespace -- postgres-operator

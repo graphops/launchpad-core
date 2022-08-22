@@ -3,7 +3,7 @@
 version: '3'
 
 tasks:
-  k0s_install:
+  install:
     interactive: true # for interactive scripts
     desc: installs k0s cluster
     deps: []
