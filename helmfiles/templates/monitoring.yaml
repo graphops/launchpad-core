@@ -7,70 +7,48 @@ repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
-# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
-# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
-# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
-# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
-# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
-values:
-  - x-launchpad-templates:
-      # An anchor for the default name of the namespace
-      template-default-monitoring-namespace-name: &template-default-monitoring-namespace-name monitoring
+templates:
+  launchpad-release-template-promtail: &launchpad-release-template-promtail
+    namespace: &template-default-monitoring-namespace-name monitoring
+    chart: grafana/promtail
+    version: 6.2.3
+    labels:
+      component: promtail
+    valuesTemplate:
+      - &launchpad-default-release-values-promtail {}
 
-      # Anchors for each default release definition, their default values, and any inner resources that are relevant
-      launchpad-release-template-promtail: &launchpad-release-template-promtail
-        namespace: *template-default-monitoring-namespace-name
-        chart: grafana/promtail
-        version: 6.2.3
-        labels:
-          component: promtail #is this needed
-        values:
-          - &launchpad-release-template-promtail {}
+  launchpad-release-template-grafana: &launchpad-release-template-grafana
+    namespace: *template-default-monitoring-namespace-name
+    chart: grafana/grafana
+    version: 6.32.14
+    labels:
+      component: grafana
+    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
+    valuesTemplate:
+      - &launchpad-default-release-values-grafana {}
 
-      launchpad-release-template-grafana: &launchpad-release-template-grafana
-        namespace: *template-default-monitoring-namespace-name
-        chart: grafana/grafana
-        version: 6.32.14
-        labels:
-          component: grafana
-        values:
-          - &launchpad-release-template-grafana {}
+  launchpad-release-template-prometheus: &launchpad-release-template-prometheus
+    namespace: *template-default-monitoring-namespace-name
+    chart: prometheus/prometheus
+    version: 15.12.0
+    labels:
+      component: prometheus
+    valuesTemplate:
+      - &launchpad-default-release-values-prometheus {}
 
-      launchpad-release-template-prometheus: &launchpad-release-template-prometheus
-        namespace: *template-default-monitoring-namespace-name
-        chart: prometheus/prometheus
-        version: 15.12.0
-        labels:
-          component: prometheus
-        values:
-          - &launchpad-default-release-values-prometheus {}
+  launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
+    namespace: *template-default-monitoring-namespace-name
+    chart: graphops/resource-injector
+    version: 0.1.0
+    valuesTemplate:
+      - &launchpad-default-release-values-loki-secret {}
 
-      launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
-        namespace: *template-default-monitoring-namespace-name
-        chart: graphops/resource-injector
-        version: 0.1.0
-        values:
-          - &launchpad-default-release-values-loki-secret {}
-
-      launchpad-release-template-loki: &launchpad-release-template-loki
-        namespace: *template-default-monitoring-namespace-name
-        chart: grafana/loki-distributed
-        version: 0.55.4 
-        labels:
-          component: loki
-        values:
-          - &launchpad-default-release-values-loki {}
-
-      # An anchor for the default releases definition for this namespace
-      template-default-monitoring-releases: &template-default-monitoring-releases
-        releases:
-          - name: promtail
-            <<: *launchpad-release-template-promtail
-          - name: grafana
-            <<: *launchpad-release-template-grafana
-          - name: prometheus
-            <<: *launchpad-release-template-prometheus
-          - name: loki-secret
-            <<: *launchpad-release-template-loki-secret
-          - name: loki
-            <<: *launchpad-release-template-loki
+  launchpad-release-template-loki: &launchpad-release-template-loki
+    namespace: *template-default-monitoring-namespace-name
+    chart: grafana/loki-distributed
+    version: 0.55.4 
+    labels:
+      component: loki
+    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
+    valuesTemplate:
+      - &launchpad-default-release-values-loki {}

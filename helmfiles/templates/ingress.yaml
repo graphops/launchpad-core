@@ -3,26 +3,12 @@ repositories:
   - name: ingress-nginx
     url: https://kubernetes.github.io/ingress-nginx
 
-# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
-# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
-# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
-# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
-# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
-values:
-  - x-launchpad-templates:
-      # An anchor for the default name of the namespace
-      template-default-ingress-namespace-name: &template-default-ingress-namespace-name ingress
-
-      # Anchors for each default release definition, their default values, and any inner resources that are relevant
-      launchpad-release-template-ingress-nginx: &launchpad-release-template-ingress-nginx
-        namespace: *template-default-ingress-namespace-name
-        chart: ingress-nginx/ingress-nginx
-        version: 4.2.1
-        values:
-          - &launchpad-default-release-values-ingress-nginx {}
-
-      # An anchor for the default releases definition for this namespace
-      template-default-ingress-releases: &template-default-ingress-releases
-        releases:
-          - name: ingress-nginx
-            <<: *launchpad-release-template-ingress-nginx
+templates:
+  launchpad-release-template-ingress-nginx: &launchpad-release-template-ingress-nginx
+    namespace: &template-default-ingress-namespace-name ingress
+    chart: ingress-nginx/ingress-nginx
+    version: 4.2.1
+    labels:
+      component: ingress-nginx
+    valuesTemplate:
+      - &launchpad-default-release-values-ingress-nginx {}
