@@ -2,60 +2,43 @@
 repositories:
   - name: openebs
     url: https://openebs.github.io/charts
-  - name: openebs-zfslocalpv
-    url: https://openebs.github.io/zfs-localpv
-  - name: openebs-rawfilelocalpv
-    url: git+https://github.com/openebs/rawfile-localpv@deploy/charts?ref=master
+  - name: openebs-rawfile-localpv
+    url: git+https://github.com/openebs/rawfile-localpv@deploy/charts?ref=0.8.0
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
-# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
-# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
-# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
-# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
-# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
-values:
-  - x-launchpad-templates:
-      # An anchor for the name of the namespace
-      template-default-storage-namespace-name: &template-default-storage-namespace-name storage
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
+templates:
+  launchpad-release-template-openebs: &launchpad-release-template-openebs
+    namespace: &template-default-storage-namespace-name storage
+    chart: openebs/openebs
+    version: 3.3.0
+    valuesTemplate:
+      - &launchpad-default-release-values-openebs
+        localprovisioner:
+          basePath: /hellow
 
-      # Anchors for each default release definition
-      template-default-release-openebs: &template-default-release-openebs
-        namespace: *template-default-storage-namespace-name
-        chart: openebs/openebs
-        version: 3.3.0
-        values:
-        - &template-default-values-openebs {}
+  launchpad-release-template-openebs-rawfile-localpv: &launchpad-release-template-openebs-rawfile-localpv
+    namespace: *template-default-storage-namespace-name
+    chart: openebs-rawfile-localpv/rawfile-csi
+    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
+    valuesTemplate:
+      - &launchpad-default-release-values-openebs-rawfile-localpv {}
 
-      template-default-release-openebs-zfs: &template-default-release-openebs-zfs
-        namespace: *template-default-storage-namespace-name
-        chart: openebs-zfslocalpv/zfs-localpv
-        version: 2.1.0
-        values:
-        - &template-default-values-openebs-zfs {}
-
-      template-default-release-openebs-rawfilelocalpv: &template-default-release-openebs-rawfilelocalpv
-        namespace: *template-default-storage-namespace-name
-        chart: openebs-rawfilelocalpv/rawfile-csi
-        # version: 4.2.1
-        values:
-        - &template-default-values-rawfilelocalpv {}
-
-      template-default-release-openebs-zfs-storageclass: &template-default-release-openebs-zfs-storageclass
-        namespace: *template-default-storage-namespace-name
-        chart: graphops/resource-injector
-        version: 0.1.0
-        values:
-        - &template-default-values-openebs-zfs-storageclass {}
-
-      # An anchor for the default releases definition for this namespace
-      template-default-storage-releases: &template-default-storage-releases
-        releases:
-          - name: openebs
-            <<: *template-default-release-openebs
-          - name: openebs-zfs
-            <<: *template-default-release-openebs-zfs
-          - name: openebs-rawfilelocalpv
-            <<: *template-default-release-openebs-rawfilelocalpv
-          - name: openebs-zfs-storageclass
-            <<: *template-default-release-openebs-zfs-storageclass
+  launchpad-release-template-openebs-rawfile-storageclass: &launchpad-release-template-openebs-rawfile-storageclass
+    namespace: *template-default-storage-namespace-name
+    chart: graphops/resource-injector
+    version: 0.1.0
+    valuesTemplate:
+      - &launchpad-default-release-values-openebs-rawfile-storageclass
+        resources:
+          - &launchpad-default-release-values-openebs-rawfile-storageclass-resource
+            apiVersion: storage.k8s.io/v1
+            kind: StorageClass
+            metadata:
+              name: openebs-rawfile
+              annotations:
+                storageclass.kubernetes.io/is-default-class: "true"
+            volumeBindingMode: WaitForFirstConsumer
+            provisioner: rawfile.csi.openebs.io
+            parameters: {}

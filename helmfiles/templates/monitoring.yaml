@@ -14,63 +14,63 @@ repositories:
 # YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
 values:
   - x-launchpad-templates:
-      # An anchor for the name of the namespace
+      # An anchor for the default name of the namespace
       template-default-monitoring-namespace-name: &template-default-monitoring-namespace-name monitoring
 
-      # Anchors for each default release definition
-      template-default-release-promtail: &template-default-release-promtail
+      # Anchors for each default release definition, their default values, and any inner resources that are relevant
+      launchpad-release-template-promtail: &launchpad-release-template-promtail
         namespace: *template-default-monitoring-namespace-name
         chart: grafana/promtail
         version: 6.2.3
         labels:
           component: promtail #is this needed
         values:
-        - &template-default-release-promtail {}
+          - &launchpad-release-template-promtail {}
 
-      template-default-release-grafana: &template-default-release-grafana
+      launchpad-release-template-grafana: &launchpad-release-template-grafana
         namespace: *template-default-monitoring-namespace-name
         chart: grafana/grafana
         version: 6.32.14
         labels:
           component: grafana
         values:
-        - &template-default-release-grafana {}
+          - &launchpad-release-template-grafana {}
 
-      template-default-release-prometheus: &template-default-release-prometheus
+      launchpad-release-template-prometheus: &launchpad-release-template-prometheus
         namespace: *template-default-monitoring-namespace-name
         chart: prometheus/prometheus
         version: 15.12.0
         labels:
           component: prometheus
         values:
-        - &template-default-values-prometheus {}
+          - &launchpad-default-release-values-prometheus {}
 
-      template-default-release-loki-secret: &template-default-release-loki-secret
+      launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
         namespace: *template-default-monitoring-namespace-name
         chart: graphops/resource-injector
         version: 0.1.0
         values:
-        - &template-default-values-loki-secret {}
+          - &launchpad-default-release-values-loki-secret {}
 
-      template-default-release-loki: &template-default-release-loki
+      launchpad-release-template-loki: &launchpad-release-template-loki
         namespace: *template-default-monitoring-namespace-name
         chart: grafana/loki-distributed
         version: 0.55.4 
         labels:
           component: loki
         values:
-        - &template-default-values-loki {}
+          - &launchpad-default-release-values-loki {}
 
       # An anchor for the default releases definition for this namespace
       template-default-monitoring-releases: &template-default-monitoring-releases
         releases:
           - name: promtail
-            <<: *template-default-release-promtail
+            <<: *launchpad-release-template-promtail
           - name: grafana
-            <<: *template-default-release-grafana
+            <<: *launchpad-release-template-grafana
           - name: prometheus
-            <<: *template-default-release-prometheus
+            <<: *launchpad-release-template-prometheus
           - name: loki-secret
-            <<: *template-default-release-loki-secret
+            <<: *launchpad-release-template-loki-secret
           - name: loki
-            <<: *template-default-release-loki
+            <<: *launchpad-release-template-loki

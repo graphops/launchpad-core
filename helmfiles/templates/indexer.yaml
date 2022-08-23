@@ -1,0 +1,68 @@
+# Repositories for Charts used for Releases in this namespace
+repositories:
+  - name: graphops
+    url: https://graphops.github.io/helm-charts
+
+# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
+# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
+# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
+# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
+# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
+values:
+  - x-launchpad-templates:
+      # An anchor for the default name of the namespace
+      template-default-indexer-namespace-name: &template-default-indexer-namespace-name indexer
+
+      # Anchors for each default release definition, their default values, and any inner resources that are relevant
+      launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
+        namespace: *template-default-indexer-namespace-name
+        chart: graphops/resource-injector
+        version: 0.1.0
+        values:
+          - &launchpad-default-release-values-postgresql-cr
+            resources:
+              - &launchpad-default-release-values-postgresql-cr-resource
+                apiVersion: "acid.zalan.do/v1"
+                kind: postgresql
+                metadata:
+                  name: pg-graph-node
+                spec:
+                  teamId: "pg"
+                  numberOfInstances: 1
+                  users:
+                    graph:
+                      - superuser
+                  enableMasterLoadBalancer: false
+                  enableReplicaLoadBalancer: false
+                  enableConnectionPooler: false # enable/disable connection pooler deployment
+                  enableReplicaConnectionPooler: false # set to enable connectionPooler for replica service
+                  databases:
+                    graph: graph
+                  postgresql:
+                    version: "14"
+                    parameters: {}
+                  volume:
+                    size: 1Ti
+                    storageClass: openebs-rawfile
+                  resources:
+                    requests:
+                      cpu: 2000m
+                      memory: 16Gi
+                  patroni:
+                    initdb:
+                      encoding: "UTF8"
+                      locale: "C" # Improves performance and important for determinism
+                      data-checksums: "true"
+
+      launchpad-release-template-graph-node: &launchpad-release-template-graph-node
+        namespace: *template-default-indexer-namespace-name
+        chart: graphops/graph-node
+        version: 4.2.1
+        values:
+          - &launchpad-default-release-values-graph-node {}
+
+      # An anchor for the default releases definition for this namespace
+      template-default-indexer-releases: &template-default-indexer-releases
+        releases:
+          - name: graph-node
+            <<: *launchpad-release-template-graph-node

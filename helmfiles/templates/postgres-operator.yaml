@@ -10,20 +10,20 @@ repositories:
 # YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
 values:
   - x-launchpad-templates:
-      # An anchor for the name of the namespace
+      # An anchor for the default name of the namespace
       template-default-postgres-operator-namespace-name: &template-default-postgres-operator-namespace-name postgres-operator
 
-      # Anchors for each default release definition
-      template-default-release-postgres-operator: &template-default-release-postgres-operator
+      # Anchors for each default release definition, their default values, and any inner resources that are relevant
+      launchpad-release-template-postgres-operator: &launchpad-release-template-postgres-operator
         namespace: *template-default-postgres-operator-namespace-name
         chart: postgres-operator-charts/postgres-operator
         version: 1.8.2
         disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600
         values:
-        - &template-default-values-postgres-operator {}
+          - &launchpad-default-release-values-postgres-operator {}
 
       # An anchor for the default releases definition for this namespace
       template-default-ingress-releases: &template-default-postgres-operator
         releases:
           - name: postgres-operator
-            <<: *template-default-release-postgres-operator
+            <<: *launchpad-release-template-postgres-operator
