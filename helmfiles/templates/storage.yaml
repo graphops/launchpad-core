@@ -14,9 +14,7 @@ templates:
     chart: openebs/openebs
     version: 3.3.0
     valuesTemplate:
-      - &launchpad-default-release-values-openebs
-        localprovisioner:
-          basePath: /hellow
+      - &launchpad-default-release-values-openebs {}
 
   launchpad-release-template-openebs-rawfile-localpv: &launchpad-release-template-openebs-rawfile-localpv
     namespace: *template-default-storage-namespace-name
