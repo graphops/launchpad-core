@@ -1,21 +1,29 @@
+# Repositories for Charts used for Releases in this namespace
 repositories:
   - name: postgres-operator-charts
     url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 
-# todo: document using the values hack to define templates
+# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
+# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
+# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
+# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
+# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
 values:
-  - template-default-namespace-name: &template-default-namespace-name postgres-operator
-  #### TEMPLATES FOR EACH RELEASE IN NAMESPACE
-  - template-default-release-postgres-operator: &template-default-release-postgres-operator
-      namespace: *template-default-namespace-name
-      chart: postgres-operator-charts/postgres-operator
-      version: 1.8.2
-      disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600
-      values:
-      - &template-default-values-postgres-operator {}
-  #### TEMPLATE FOR ALL RELEASES IN NAMESPACE
-  # template-default-<namespace>-releases
-  - template-default-ingress-releases: &template-default-postgres-operator
-      releases:
-        - name: postgres-operator
-          <<: *template-default-release-postgres-operator
+  - x-launchpad-templates:
+      # An anchor for the name of the namespace
+      template-default-postgres-operator-namespace-name: &template-default-postgres-operator-namespace-name postgres-operator
+
+      # Anchors for each default release definition
+      template-default-release-postgres-operator: &template-default-release-postgres-operator
+        namespace: *template-default-postgres-operator-namespace-name
+        chart: postgres-operator-charts/postgres-operator
+        version: 1.8.2
+        disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600
+        values:
+        - &template-default-values-postgres-operator {}
+
+      # An anchor for the default releases definition for this namespace
+      template-default-ingress-releases: &template-default-postgres-operator
+        releases:
+          - name: postgres-operator
+            <<: *template-default-release-postgres-operator

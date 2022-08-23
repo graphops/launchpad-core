@@ -1,3 +1,4 @@
+# Repositories for Charts used for Releases in this namespace
 repositories:
   - name: grafana
     url: https://grafana.github.io/helm-charts
@@ -6,66 +7,70 @@ repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
-# todo: document using the values hack to define templates
+# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
+# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
+# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
+# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
+# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
 values:
-  - template-default-namespace-name: &template-default-namespace-name monitoring
-  #### TEMPLATES FOR EACH RELEASE IN NAMESPACE
-  - template-default-release-promtail: &template-default-release-promtail
-      namespace: *template-default-namespace-name
-      chart: grafana/promtail
-      version: 6.2.3
-      labels:
-        component: promtail #is this needed
-      values:
-      - &template-default-release-promtail {}
-      
-  - template-default-release-grafana: &template-default-release-grafana
-      namespace: *template-default-namespace-name
-      chart: grafana/grafana
-      version: 6.32.14
-      labels:
-        component: grafana
-      values:
-      - &template-default-release-grafana {}
+  - x-launchpad-templates:
+      # An anchor for the name of the namespace
+      template-default-monitoring-namespace-name: &template-default-monitoring-namespace-name monitoring
 
-  - template-default-release-prometheus: &template-default-release-prometheus
-      namespace: *template-default-namespace-name
-      chart: prometheus/prometheus
-      version: 15.12.0
-      labels:
-        component: prometheus
-      values:
-      - &template-default-values-prometheus {}
+      # Anchors for each default release definition
+      template-default-release-promtail: &template-default-release-promtail
+        namespace: *template-default-monitoring-namespace-name
+        chart: grafana/promtail
+        version: 6.2.3
+        labels:
+          component: promtail #is this needed
+        values:
+        - &template-default-release-promtail {}
 
-  - template-default-release-loki-secret: &template-default-release-loki-secret
-      namespace: *template-default-namespace-name
-      chart: graphops/resource-injector
-      version: 0.1.0
-      values:
-      - &template-default-values-loki-secret {}
+      template-default-release-grafana: &template-default-release-grafana
+        namespace: *template-default-monitoring-namespace-name
+        chart: grafana/grafana
+        version: 6.32.14
+        labels:
+          component: grafana
+        values:
+        - &template-default-release-grafana {}
 
-  - template-default-release-loki: &template-default-release-loki
-      namespace: *template-default-namespace-name
-      chart: grafana/loki-distributed
-      version: 0.55.4 
-      labels:
-        component: loki
-      values:
-      - &template-default-values-loki {}
+      template-default-release-prometheus: &template-default-release-prometheus
+        namespace: *template-default-monitoring-namespace-name
+        chart: prometheus/prometheus
+        version: 15.12.0
+        labels:
+          component: prometheus
+        values:
+        - &template-default-values-prometheus {}
 
-  #### TEMPLATE FOR ALL RELEASES IN NAMESPACE
-  # template-default-<namespace>-releases
-  - template-default-monitoring-releases: &template-default-monitoring-releases
-      releases:
-        - name: promtail
-          <<: *template-default-release-promtail
-        - name: grafana
-          <<: *template-default-release-grafana
-        - name: prometheus
-          <<: *template-default-release-prometheus
-        - name: loki-secret
-          <<: *template-default-release-loki-secret
-        - name: loki
-          <<: *template-default-release-loki
-        
-        
+      template-default-release-loki-secret: &template-default-release-loki-secret
+        namespace: *template-default-monitoring-namespace-name
+        chart: graphops/resource-injector
+        version: 0.1.0
+        values:
+        - &template-default-values-loki-secret {}
+
+      template-default-release-loki: &template-default-release-loki
+        namespace: *template-default-monitoring-namespace-name
+        chart: grafana/loki-distributed
+        version: 0.55.4 
+        labels:
+          component: loki
+        values:
+        - &template-default-values-loki {}
+
+      # An anchor for the default releases definition for this namespace
+      template-default-monitoring-releases: &template-default-monitoring-releases
+        releases:
+          - name: promtail
+            <<: *template-default-release-promtail
+          - name: grafana
+            <<: *template-default-release-grafana
+          - name: prometheus
+            <<: *template-default-release-prometheus
+          - name: loki-secret
+            <<: *template-default-release-loki-secret
+          - name: loki
+            <<: *template-default-release-loki
