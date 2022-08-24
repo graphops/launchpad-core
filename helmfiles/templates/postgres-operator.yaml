@@ -3,6 +3,7 @@ repositories:
   - name: postgres-operator-charts
     url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-postgres-operator: &launchpad-release-template-postgres-operator
     namespace: &template-default-postgres-operator-namespace-name postgres-operator

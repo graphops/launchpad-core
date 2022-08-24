@@ -3,11 +3,7 @@ repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
-# In order to allow for a high degree of flexibility in launchpad-starter, we use YAML templating (not Helmfile templates)
-# to define a rich set of templates that can be composed by downstream YAML into the desired configuration.
-# Helmfile validates the content of any Helmfile YAML against a strictly defined and typed schema. The only key in that
-# schema that supports arbitrary YAML is the `values` key, which is of type `[]interface{}`. Therefore, we define our
-# YAML templates and their anchors in this key, but they are not intended to be used as Helmfile Values.
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
     namespace: &template-default-indexer-namespace-name indexer
@@ -47,10 +43,10 @@ templates:
                 initdb:
                   encoding: "UTF8"
                   locale: "C" # Improves performance and important for determinism
-                  data-checksums: "true" 
+                  data-checksums: "true"
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
-    namespace: *template-default-indexer-namespace-name 
+    namespace: *template-default-indexer-namespace-name
     chart: graphops/graph-node
     # version: 4.2.1
     valuesTemplate:

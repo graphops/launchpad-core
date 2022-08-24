@@ -3,6 +3,7 @@ repositories:
   - name: ingress-nginx
     url: https://kubernetes.github.io/ingress-nginx
 
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-ingress-nginx: &launchpad-release-template-ingress-nginx
     namespace: &template-default-ingress-namespace-name ingress

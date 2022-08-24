@@ -7,6 +7,7 @@ repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-promtail: &launchpad-release-template-promtail
     namespace: &template-default-monitoring-namespace-name monitoring
@@ -46,7 +47,7 @@ templates:
   launchpad-release-template-loki: &launchpad-release-template-loki
     namespace: *template-default-monitoring-namespace-name
     chart: grafana/loki-distributed
-    version: 0.55.4 
+    version: 0.55.4
     labels:
       component: loki
     # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
