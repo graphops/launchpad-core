@@ -5,8 +5,11 @@ repositories:
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
+  launchpad-release-template-defaults: &launchpad-release-template-defaults
+    namespace: postgres-operator
+    missingFileHandler: Warn
   launchpad-release-template-postgres-operator: &launchpad-release-template-postgres-operator
-    namespace: &template-default-postgres-operator-namespace-name postgres-operator
+    <<: *launchpad-release-template-defaults
     chart: postgres-operator-charts/postgres-operator
     version: 1.8.2
     disableValidationOnInstall: true # https://github.com/roboll/helmfile/issues/1600

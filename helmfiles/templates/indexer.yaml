@@ -5,8 +5,11 @@ repositories:
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
+  launchpad-release-template-defaults: &launchpad-release-template-defaults
+    namespace: indexer
+    missingFileHandler: Warn
   launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
-    namespace: &template-default-indexer-namespace-name indexer
+    <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.1.0
     values:
@@ -46,7 +49,7 @@ templates:
                   data-checksums: "true"
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
-    namespace: *template-default-indexer-namespace-name
+    <<: *launchpad-release-template-defaults
     chart: graphops/graph-node
     # version: 4.2.1
     valuesTemplate:

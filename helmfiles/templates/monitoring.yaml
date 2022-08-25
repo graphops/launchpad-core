@@ -8,9 +8,12 @@ repositories:
     url: https://graphops.github.io/helm-charts
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
-templates:
+templates: # TODO replace with https://github.com/prometheus-operator/kube-prometheus, add node-problem-detector
+  launchpad-release-template-defaults: &launchpad-release-template-defaults
+    namespace: monitoring
+    missingFileHandler: Warn
   launchpad-release-template-promtail: &launchpad-release-template-promtail
-    namespace: &template-default-monitoring-namespace-name monitoring
+    <<: *launchpad-release-template-defaults
     chart: grafana/promtail
     version: 6.2.3
     labels:
@@ -19,33 +22,33 @@ templates:
       - &launchpad-default-release-values-promtail {}
 
   launchpad-release-template-grafana: &launchpad-release-template-grafana
-    namespace: *template-default-monitoring-namespace-name
+    <<: *launchpad-release-template-defaults
     chart: grafana/grafana
     version: 6.32.14
     labels:
       component: grafana
     # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
-      - &launchpad-default-release-values-grafana {}
+      - &launchpad-default-release-values-grafana {} # TODO disable auth, enable dashboard and datasource finding across all NS
 
   launchpad-release-template-prometheus: &launchpad-release-template-prometheus
-    namespace: *template-default-monitoring-namespace-name
+    <<: *launchpad-release-template-defaults
     chart: prometheus/prometheus
     version: 15.12.0
     labels:
       component: prometheus
     valuesTemplate:
-      - &launchpad-default-release-values-prometheus {}
+      - &launchpad-default-release-values-prometheus {} # TODO Enable scrape annotations on objects
 
   launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
-    namespace: *template-default-monitoring-namespace-name
+    <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.1.0
     valuesTemplate:
       - &launchpad-default-release-values-loki-secret {}
 
   launchpad-release-template-loki: &launchpad-release-template-loki
-    namespace: *template-default-monitoring-namespace-name
+    <<: *launchpad-release-template-defaults
     chart: grafana/loki-distributed
     version: 0.55.4
     labels:

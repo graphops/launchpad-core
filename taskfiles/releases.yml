@@ -1,17 +1,20 @@
 version: '3'
 
 tasks:
-  apply-namespace:
+  check-cluster:
+    interactive: true
+    # check that the k8s cluster is correct and confirm with the user, can be used as precondition?
+  apply:
     interactive: true
     desc: Sync releases for a namespace
     deps: []
     summary: ""
     cmds:
       - |
-        set - {{ .CLI_ARGS }}
+        set -e - {{ .CLI_ARGS }}
         NAMESPACE=$1; shift
 
-        NS_DIR="launchpad-core/helmfiles/releases"
+        NS_DIR="./helmfiles/namespace-releases"
 
         usage(){
           echo "Invalid usage. Specify arguments: <namespace>"
@@ -26,13 +29,16 @@ tasks:
         fi
 
         set -x
-        # do real stuff
         helmfile -f "$NAMESPACE_FILE_PATH" apply "$@"
 
-  setup:
+  apply-all:
     cmds:
-      - task releases:apply-namespace -- sealed-secrets
-      - task releases:apply-namespace -- storage
-      # - task releases:apply-namespace -- monitoring
-      # - task releases:apply-namespace -- ingress
-      # - task releases:apply-namespace -- postgres-operator
+      - |
+        set -e - {{ .CLI_ARGS }}
+
+        NS_DIR="./helmfiles/namespace-releases"
+
+        for file in $NS_DIR/*.yaml; do
+          NS=$(basename $file | cut -f 1 -d '.')
+          (set -ex; task releases:apply -- $NS)
+        done
