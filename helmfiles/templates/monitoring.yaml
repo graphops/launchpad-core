@@ -1,9 +1,9 @@
 # Repositories for Charts used for Releases in this namespace
 repositories:
-  - name: grafana
-    url: https://grafana.github.io/helm-charts
-  - name: prometheus
+  - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: deliveryhero
+    url: https://charts.deliveryhero.io
   - name: graphops
     url: https://graphops.github.io/helm-charts
 
@@ -12,6 +12,21 @@ templates: # TODO replace with https://github.com/prometheus-operator/kube-prom
   launchpad-release-template-defaults: &launchpad-release-template-defaults
     namespace: monitoring
     missingFileHandler: Warn
+
+  launchpad-release-template-kube-prometheus-stack: &launchpad-release-template-kube-prometheus-stack
+    <<: *launchpad-release-template-defaults
+    chart: prometheus-community/kube-prometheus-stack
+    version: 39.9.0
+    valuesTemplate:
+      - &launchpad-default-release-values-kube-prometheus-stack {} # TODO Enable scrape annotations on objects
+
+  launchpad-release-template-node-problem-detector: &launchpad-release-template-node-problem-detector
+    <<: *launchpad-release-template-defaults
+    chart: deliveryhero/node-problem-detector
+    version: 2.2.3
+    valuesTemplate:
+      - &launchpad-default-release-values-node-problem-detector {} # TODO Enable scrape annotations on objects
+
   launchpad-release-template-promtail: &launchpad-release-template-promtail
     <<: *launchpad-release-template-defaults
     chart: grafana/promtail
@@ -20,25 +35,6 @@ templates: # TODO replace with https://github.com/prometheus-operator/kube-prom
       component: promtail
     valuesTemplate:
       - &launchpad-default-release-values-promtail {}
-
-  launchpad-release-template-grafana: &launchpad-release-template-grafana
-    <<: *launchpad-release-template-defaults
-    chart: grafana/grafana
-    version: 6.32.14
-    labels:
-      component: grafana
-    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
-    valuesTemplate:
-      - &launchpad-default-release-values-grafana {} # TODO disable auth, enable dashboard and datasource finding across all NS
-
-  launchpad-release-template-prometheus: &launchpad-release-template-prometheus
-    <<: *launchpad-release-template-defaults
-    chart: prometheus/prometheus
-    version: 15.12.0
-    labels:
-      component: prometheus
-    valuesTemplate:
-      - &launchpad-default-release-values-prometheus {} # TODO Enable scrape annotations on objects
 
   launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
     <<: *launchpad-release-template-defaults
@@ -51,8 +47,6 @@ templates: # TODO replace with https://github.com/prometheus-operator/kube-prom
     <<: *launchpad-release-template-defaults
     chart: grafana/loki-distributed
     version: 0.55.4
-    labels:
-      component: loki
     # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
       - &launchpad-default-release-values-loki {}
