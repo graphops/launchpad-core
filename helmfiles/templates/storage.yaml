@@ -54,8 +54,10 @@ templates:
     version: 2.1.0
     valuesTemplate:
       - &launchpad-default-release-values-openebs-zfs-localpv
+        analytics:
+          enabled: false
         zfsNode:
-          kubeletDir: /var/lib/k0s/kubelet
+          kubeletDir: /var/lib/k0s/kubelet/
 
   launchpad-release-template-openebs-zfs-storageclass: &launchpad-release-template-openebs-zfs-storageclass
     <<: *launchpad-release-template-defaults
@@ -76,7 +78,7 @@ templates:
               dedup: "off"
               fstype: "zfs"
               poolname: "zpool1"
-              thinProvision: "on"
+              thinProvision: "yes"
             provisioner: zfs.csi.openebs.io
 
   launchpad-release-template-openebs-monitoring: &launchpad-release-template-openebs-monitoring

@@ -12,9 +12,12 @@ templates:
   launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.1.8
+    version: 0.1.9
     valuesTemplate:
-      - &launchpad-default-release-values-erigon-eth-mainnet {}
+      - &launchpad-default-release-values-erigon-eth-mainnet
+        statefulNode:
+          affinityPresets:
+            antiAffinityByHostname: false
 
   launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-proxyd-eth-mainnet
     <<: *launchpad-release-template-defaults
