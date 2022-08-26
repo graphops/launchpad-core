@@ -1,0 +1,18 @@
+---
+- name: Installs ZFS On Linux
+  hosts: init_group
+  become: true
+  vars:
+    - ansible_ssh_port: 987
+    - zfs_create_pools: true
+    - zfs_pools:  #defines zpool(s) to manage
+      - name: zpool1
+        atime: 'off'
+        compression: 'lz4'
+        devices:  #define devices to create pool with...can define multiple by | sdb sdc sdd sde sdf | all on one line w/spaces
+          - '/dev/nvme0n1'
+        type: basic  #define pool type... | basic (no-raid) | mirror | raidz | raidz2 | raidz3
+        state: present
+        action: create
+  roles:
+    - role: zfs_install

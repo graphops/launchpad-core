@@ -1,0 +1,24 @@
+# Repositories for Charts used for Releases in this namespace
+repositories:
+  - name: graphops
+    url: https://graphops.github.io/helm-charts
+
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
+templates:
+  launchpad-release-template-defaults: &launchpad-release-template-defaults
+    namespace: eth-mainnet
+    missingFileHandler: Warn
+
+  launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
+    <<: *launchpad-release-template-defaults
+    chart: graphops/erigon
+    version: 0.1.8
+    valuesTemplate:
+      - &launchpad-default-release-values-erigon-eth-mainnet {}
+
+  launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-proxyd-eth-mainnet
+    <<: *launchpad-release-template-defaults
+    chart: graphops/proxyd
+    version: 0.1.1
+    valuesTemplate:
+      - &launchpad-default-release-values-proxyd-eth-mainnet {}

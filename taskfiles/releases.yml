@@ -1,37 +1,21 @@
 version: '3'
 
 tasks:
-  check-cluster:
-    interactive: true
-    # check that the k8s cluster is correct and confirm with the user, can be used as precondition?
   apply:
     interactive: true
     desc: Sync releases for a namespace
     deps: []
     summary: ""
     cmds:
-      - |
-        set -e - {{ .CLI_ARGS }}
-        NAMESPACE=$1; shift
+      - launchpad-core/taskfiles/scripts/helmfile.sh apply {{.CLI_ARGS}}
 
-        NS_DIR="./helmfiles/namespace-releases"
-
-        usage(){
-          echo "Invalid usage. Specify arguments: <namespace>"
-          echo "<namespace> Must be a valid namespace that exists in $NS_DIR"
-          exit 1
-        }
-
-        NAMESPACE_FILE_PATH="${NS_DIR}/${NAMESPACE}.yaml"
-
-        if [ -z "$NAMESPACE" ] || [ ! -f "$NAMESPACE_FILE_PATH" ]; then
-          usage
-        fi
-
-        gum confirm "Are you sure you want to sync all the releases defined in $NAMESPACE_FILE_PATH?"
-
-        set -x
-        helmfile --debug -f "$NAMESPACE_FILE_PATH" apply "$@"
+  delete:
+    interactive: true
+    desc: Sync releases for a namespace
+    deps: []
+    summary: ""
+    cmds:
+      - launchpad-core/taskfiles/scripts/helmfile.sh delete {{.CLI_ARGS}}
 
   apply-base:
     interactive: true
@@ -45,6 +29,21 @@ tasks:
       - task releases:apply -- ingress
       - task releases:apply -- postgres-operator
 
+  apply-indexer:
+    interactive: true
+    desc: Sync releases for a namespace
+    deps: []
+    summary: ""
+    cmds:
+      - task releases:apply -- indexer {{.CLI_ARGS}}
+
+  status:
+    interactive: true
+    desc: Sync releases for a namespace
+    deps: []
+    summary: ""
+    cmds:
+      - launchpad-core/taskfiles/scripts/helmfile.sh status {{.CLI_ARGS}}
 
   # apply-all:
   #   cmds:

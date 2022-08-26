@@ -8,7 +8,7 @@ repositories:
     url: https://graphops.github.io/helm-charts
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
-templates: # TODO replace with https://github.com/prometheus-operator/kube-prometheus, add node-problem-detector
+templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
     namespace: monitoring
     missingFileHandler: Warn
@@ -18,12 +18,59 @@ templates: # TODO replace with https://github.com/prometheus-operator/kube-prom
     chart: prometheus-community/kube-prometheus-stack
     version: 39.9.0
     valuesTemplate:
-      - &launchpad-default-release-values-kube-prometheus-stack {} # TODO Enable scrape annotations on objects
+      - &launchpad-default-release-values-kube-prometheus-stack # TODO Enable scrape annotations on objects, disable grafana auth
+        grafana:
+          service:
+            enabled: true
+
+          datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://kube-prometheus-stack-prometheus
+              access: proxy
+              isDefault: true
+            - name: Loki
+              type: loki
+              access: proxy
+              url: http://loki-loki-distributed-gateway
+
+
+          dashboards: # TODO rather mixing concerns here, can we use resource-injected CRs in the relevant places?
+            default:
+              loki-stats:
+                gnetId: 14055
+                datasource: Loki
+              loki-logs:
+                gnetId: 13639
+                datasource: Loki
+              loki-quicksearch:
+                gnetId: 13359
+                datasource: Loki
+              k8s-cluster-monitor:
+                gnetId: 6663
+                datasource: Prometheus
+
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+              - name: 'default'
+                orgId: 1
+                folder: ''
+                type: file
+                updateIntervalSeconds: 10
+                disableDeletion: true
+                editable: true
+                options:
+                  path: /var/lib/grafana/dashboards/default
 
   launchpad-release-template-node-problem-detector: &launchpad-release-template-node-problem-detector
     <<: *launchpad-release-template-defaults
     chart: deliveryhero/node-problem-detector
-    version: 2.2.3
+    version: 2.2.2
     valuesTemplate:
       - &launchpad-default-release-values-node-problem-detector {} # TODO Enable scrape annotations on objects
 
@@ -34,7 +81,9 @@ templates: # TODO replace with https://github.com/prometheus-operator/kube-prom
     labels:
       component: promtail
     valuesTemplate:
-      - &launchpad-default-release-values-promtail {}
+      - &launchpad-default-release-values-promtail
+        config:
+          lokiAddress: http://loki-loki-distributed-gateway/loki/api/v1/push
 
   launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
     <<: *launchpad-release-template-defaults

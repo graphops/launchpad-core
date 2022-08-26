@@ -2,6 +2,8 @@
 repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
+  - name: graph-node-chart-dev
+    url: git+https://github.com/graphops/helm-charts@charts?ref=feature/graph-node
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
@@ -12,7 +14,7 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.1.0
-    values:
+    valuesTemplate:
       - &launchpad-default-release-values-postgresql-cr
         resources:
           - &launchpad-default-release-values-postgresql-cr-resource
@@ -36,12 +38,15 @@ templates:
                 version: "14"
                 parameters: {}
               volume:
-                size: 1Ti
-                storageClass: openebs-rawfile
+                size: 8Gi
+                storageClass: openebs-hostpath
               resources:
                 requests:
-                  cpu: 2000m
-                  memory: 16Gi
+                  cpu: 100m
+                  memory: 2Gi
+                limits:
+                  cpu: 1000m
+                  memory: 4Gi
               patroni:
                 initdb:
                   encoding: "UTF8"
@@ -50,7 +55,7 @@ templates:
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
-    chart: graphops/graph-node
+    chart: graph-node-chart-dev/graph-node
     # version: 4.2.1
     valuesTemplate:
       - &launchpad-default-release-values-graph-node {}
