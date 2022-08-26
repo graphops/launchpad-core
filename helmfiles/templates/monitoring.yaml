@@ -42,11 +42,6 @@ templates:
             datasources.yaml:
               apiVersion: 1
               datasources:
-              - name: Prometheus
-                type: prometheus
-                url: http://kube-prometheus-stack-prometheus
-                access: proxy
-                isDefault: true
               - name: Loki
                 type: loki
                 access: proxy
@@ -98,7 +93,8 @@ templates:
     valuesTemplate:
       - &launchpad-default-release-values-promtail
         config:
-          lokiAddress: http://loki-loki-distributed-gateway/loki/api/v1/push
+          clients:
+            - url: http://loki-loki-distributed-gateway/loki/api/v1/push
 
   launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
     <<: *launchpad-release-template-defaults
@@ -113,4 +109,25 @@ templates:
     version: 0.55.4
     # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
-      - &launchpad-default-release-values-loki {}
+      - &launchpad-default-release-values-loki
+        loki:
+          auth_enabled: false
+          extraArgs:
+            - -config.expand-env=true
+          schemaConfig:
+            configs:
+              - from: 2022-01-01
+                store: boltdb-shipper
+                object_store: filesystem
+                schema: v11
+                index:
+                  prefix: loki_index_
+                  period: 24h
+          storageConfig:
+            boltdb_shipper:
+              shared_store: filesystem
+              active_index_directory: /var/loki/index
+              cache_location: /var/loki/cache
+              cache_ttl: 168h
+            filesystem:
+              directory: /var/loki/chunks
