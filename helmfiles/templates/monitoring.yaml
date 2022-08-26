@@ -19,6 +19,9 @@ templates:
     version: 39.9.0
     valuesTemplate: # carefully review https://github.com/notevery/kube-prometheus-stack/blob/main/values.yaml
       - &launchpad-default-release-values-kube-prometheus-stack # TODO Enable scrape annotations on objects, disable grafana auth
+        # prometheus:
+        #   prometheusSpec:
+            # TODO servicemonitor namespace mathcing
         grafana:
           grafana.ini:
             auth:
@@ -58,9 +61,6 @@ templates:
                 datasource: Loki
               loki-logs:
                 gnetId: 13639
-                datasource: Loki
-              loki-quicksearch:
-                gnetId: 13359
                 datasource: Loki
               k8s-cluster-monitor:
                 gnetId: 6663

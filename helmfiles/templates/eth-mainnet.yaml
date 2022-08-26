@@ -15,13 +15,25 @@ templates:
     version: 0.1.9
     valuesTemplate:
       - &launchpad-default-release-values-erigon-eth-mainnet
+        prometheus:
+          serviceMonitors:
+            enabled: true
+        grafana:
+          dashboards: true
+        image:
+          tag: devel
         statefulNode:
           affinityPresets:
             antiAffinityByHostname: false
 
-  launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-proxyd-eth-mainnet
+  launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-template-proxyd-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
-    version: 0.1.1
+    version: 0.1.2
     valuesTemplate:
-      - &launchpad-default-release-values-proxyd-eth-mainnet {}
+      - &launchpad-default-release-values-proxyd-eth-mainnet
+        prometheus:
+          serviceMonitors:
+            enabled: true
+        grafana:
+          dashboards: true
