@@ -17,25 +17,40 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: prometheus-community/kube-prometheus-stack
     version: 39.9.0
-    valuesTemplate:
+    valuesTemplate: # carefully review https://github.com/notevery/kube-prometheus-stack/blob/main/values.yaml
       - &launchpad-default-release-values-kube-prometheus-stack # TODO Enable scrape annotations on objects, disable grafana auth
         grafana:
-          service:
-            enabled: true
+          grafana.ini:
+            auth:
+              disable_login_form: true
+              anonymous:
+                enabled: true
+                org_role: Viewer
+                hide_version: true
+          sidecar:
+            dashboards:
+              enabled: true
+              searchNamespace: ALL
+            datasources:
+              enabled: true
+              searchNamespace: ALL
+            notifiers:
+              enabled: true
+              searchNamespace: ALL
 
           datasources:
-          datasources.yaml:
-            apiVersion: 1
-            datasources:
-            - name: Prometheus
-              type: prometheus
-              url: http://kube-prometheus-stack-prometheus
-              access: proxy
-              isDefault: true
-            - name: Loki
-              type: loki
-              access: proxy
-              url: http://loki-loki-distributed-gateway
+            datasources.yaml:
+              apiVersion: 1
+              datasources:
+              - name: Prometheus
+                type: prometheus
+                url: http://kube-prometheus-stack-prometheus
+                access: proxy
+                isDefault: true
+              - name: Loki
+                type: loki
+                access: proxy
+                url: http://loki-loki-distributed-gateway
 
 
           dashboards: # TODO rather mixing concerns here, can we use resource-injected CRs in the relevant places?
