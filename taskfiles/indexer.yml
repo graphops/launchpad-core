@@ -9,15 +9,15 @@ tasks:
 
   forward-indexer-agent:
     cmds:
-      - kubectl port-forward port:port service/service-name
+      - kubectl -n indexer port-forward service/service-name port:port
 
   forward-grafana:
     cmds:
-      - kubectl port-forward port:port service/service-name
+      - kubectl -n monitoring --context $KUBECONTEXT port-forward service/kube-prometheus-stack-grafana 3001:80
 
   forward-erigon:
     cmds:
-      - kubectl port-forward port:port service/service-name    
+      - 
 
   forward-all:
     deps:

@@ -23,10 +23,13 @@ templates:
           grafana.ini:
             auth:
               disable_login_form: true
-              anonymous:
-                enabled: true
-                org_role: Viewer
-                hide_version: true
+            auth.anonymous:
+              enabled: true
+              org_name: "Main Org."
+              org_role: Admin
+              hide_version: true
+            auth.basic:
+              enabled: false
           sidecar:
             dashboards:
               enabled: true
