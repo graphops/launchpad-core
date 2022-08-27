@@ -13,11 +13,11 @@ templates:
   launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
-    version: 0.1.0
+    version: 0.2.0
     valuesTemplate:
       - &launchpad-default-release-values-postgresql-cr
         resources:
-          - &launchpad-default-release-values-postgresql-cr-resource
+          postgres-cr: &launchpad-default-release-values-postgresql-cr-resource
             apiVersion: "acid.zalan.do/v1"
             kind: postgresql
             metadata:
