@@ -19,9 +19,20 @@ templates:
     version: 39.9.0
     valuesTemplate: # carefully review https://github.com/notevery/kube-prometheus-stack/blob/main/values.yaml
       - &launchpad-default-release-values-kube-prometheus-stack # TODO Enable scrape annotations on objects, disable grafana auth
-        # prometheus:
-        #   prometheusSpec:
-            # TODO servicemonitor namespace mathcing
+        prometheus:
+          prometheusSpec:
+            podMonitorNamespaceSelector:
+              any: true
+            podMonitorSelector: {}
+            podMonitorSelectorNilUsesHelmValues: false
+            ruleNamespaceSelector:
+              any: true
+            ruleSelector: {}
+            ruleSelectorNilUsesHelmValues: false
+            serviceMonitorNamespaceSelector:
+              any: true
+            serviceMonitorSelector: {}
+            serviceMonitorSelectorNilUsesHelmValues: false
         grafana:
           grafana.ini:
             auth:
@@ -43,7 +54,6 @@ templates:
             notifiers:
               enabled: true
               searchNamespace: ALL
-
           datasources:
             datasources.yaml:
               apiVersion: 1
@@ -52,8 +62,6 @@ templates:
                 type: loki
                 access: proxy
                 url: http://loki-loki-distributed-gateway
-
-
           dashboards: # TODO rather mixing concerns here, can we use resource-injected CRs in the relevant places?
             default:
               loki-stats:
@@ -65,7 +73,6 @@ templates:
               k8s-cluster-monitor:
                 gnetId: 6663
                 datasource: Prometheus
-
           dashboardProviders:
             dashboardproviders.yaml:
               apiVersion: 1
@@ -110,7 +117,6 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: grafana/loki-distributed
     version: 0.55.4
-    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
       - &launchpad-default-release-values-loki
         loki:
