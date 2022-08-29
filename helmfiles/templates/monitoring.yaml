@@ -36,8 +36,6 @@ templates:
               org_name: "Main Org."
               org_role: Admin
               hide_version: true
-            # auth.basic:
-            #   enabled: false
           sidecar:
             logLevel: DEBUG
             dashboards:
