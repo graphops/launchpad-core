@@ -36,10 +36,10 @@ templates:
               org_name: "Main Org."
               org_role: Admin
               hide_version: true
-            auth.basic:
-              enabled: false
-          # Configure Grafana sidecars to search for Dashboards, Datasources and Notifiers across all namespaces
+            # auth.basic:
+            #   enabled: false
           sidecar:
+            logLevel: DEBUG
             dashboards:
               enabled: true
               searchNamespace: ALL
@@ -49,68 +49,6 @@ templates:
             notifiers:
               enabled: true
               searchNamespace: ALL
-          # Configure Loki as a Datasource by default
-          datasources:
-            datasources.yaml:
-              apiVersion: 1
-              datasources:
-              - name: Loki
-                type: loki
-                access: proxy
-                url: http://loki-loki-distributed-gateway
-          # Install some useful public dashboards
-          dashboards:
-            default:
-              loki-stats:
-                gnetId: 14055
-                datasource: Loki
-              loki-logs:
-                gnetId: 13639
-                datasource: Loki
-              k8s-cluster-monitor:
-                gnetId: 6663
-                datasource: Prometheus
-          # Configure DashboardProvider behaviour
-          dashboardProviders:
-            dashboardproviders.yaml:
-              apiVersion: 1
-              providers:
-              - name: 'default'
-                orgId: 1
-                folder: ''
-                type: file
-                updateIntervalSeconds: 10
-                disableDeletion: true
-                editable: true
-                options:
-                  path: /var/lib/grafana/dashboards/default
-
-  launchpad-release-template-node-problem-detector: &launchpad-release-template-node-problem-detector
-    <<: *launchpad-release-template-defaults
-    chart: deliveryhero/node-problem-detector
-    version: 2.2.2
-    valuesTemplate:
-      - &launchpad-default-release-values-node-problem-detector {}
-
-  launchpad-release-template-promtail: &launchpad-release-template-promtail
-    <<: *launchpad-release-template-defaults
-    chart: grafana/promtail
-    version: 6.2.3
-    labels:
-      component: promtail
-    valuesTemplate:
-      - &launchpad-default-release-values-promtail
-        # Configure Promtail to push data to Loki
-        config:
-          clients:
-            - url: http://loki-loki-distributed-gateway/loki/api/v1/push
-
-  launchpad-release-template-loki-secret: &launchpad-release-template-loki-secret
-    <<: *launchpad-release-template-defaults
-    chart: graphops/resource-injector
-    version: 0.2.0
-    valuesTemplate:
-      - &launchpad-default-release-values-loki-secret {}
 
   launchpad-release-template-loki: &launchpad-release-template-loki
     <<: *launchpad-release-template-defaults
@@ -139,3 +77,67 @@ templates:
               cache_ttl: 168h
             filesystem:
               directory: /var/loki/chunks
+
+  launchpad-release-template-promtail: &launchpad-release-template-promtail
+    <<: *launchpad-release-template-defaults
+    chart: grafana/promtail
+    version: 6.2.3
+    labels:
+      component: promtail
+    valuesTemplate:
+      - &launchpad-default-release-values-promtail
+        # Configure Promtail to push data to Loki
+        config:
+          clients:
+            - url: http://loki-loki-distributed-gateway/loki/api/v1/push
+
+  launchpad-release-template-node-problem-detector: &launchpad-release-template-node-problem-detector
+    <<: *launchpad-release-template-defaults
+    chart: deliveryhero/node-problem-detector
+    version: 2.2.2
+    valuesTemplate:
+      - &launchpad-default-release-values-node-problem-detector {}
+
+  launchpad-release-template-grafana-objects: &launchpad-release-template-grafana-objects
+    <<: *launchpad-release-template-defaults
+    chart: graphops/resource-injector
+    version: 0.2.0
+    valuesTemplate:
+      - &launchpad-default-release-values-grafana-objects
+        resources:
+
+          # Configure Loki as a Datasource by default
+          # datasources:
+          #   datasources.yaml:
+          #     apiVersion: 1
+          #     datasources:
+          #     - name: Loki
+          #       type: loki
+          #       access: proxy
+          #       url: http://loki-loki-distributed-gateway
+          # # Install some useful public dashboards
+          # dashboards:
+          #   default:
+          #     loki-stats:
+          #       gnetId: 14055
+          #       datasource: Loki
+          #     loki-logs:
+          #       gnetId: 13639
+          #       datasource: Loki
+          #     k8s-cluster-monitor:
+          #       gnetId: 6663
+          #       datasource: Prometheus
+          # # Configure DashboardProvider behaviour
+          # dashboardProviders:
+          #   dashboardproviders.yaml:
+          #     apiVersion: 1
+          #     providers:
+          #     - name: 'default'
+          #       orgId: 1
+          #       folder: ''
+          #       type: file
+          #       updateIntervalSeconds: 10
+          #       disableDeletion: true
+          #       editable: true
+          #       options:
+          #         path: /var/lib/grafana/dashboards/default

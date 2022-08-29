@@ -12,7 +12,7 @@ templates:
   launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.2.1
+    version: 0.2.3
     valuesTemplate:
       - &launchpad-default-release-values-erigon-eth-mainnet
         prometheus:
@@ -24,7 +24,7 @@ templates:
   launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-template-proxyd-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
-    version: 0.1.3
+    version: 0.1.4
     valuesTemplate:
       - &launchpad-default-release-values-proxyd-eth-mainnet
         prometheus:
