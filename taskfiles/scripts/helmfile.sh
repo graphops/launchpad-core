@@ -33,7 +33,11 @@ if [ "$LAUNCHPAD_VERBOSE_LOGS" = "true" ]; then
     DEBUG_LOGS="--debug"
 fi
 
-# gum confirm "Are you sure you want to sync all the releases defined in $NAMESPACE_FILE_PATH?"
+if [ "$NAMESPACE" = "sealed-secrets" ]; then
+    gum confirm \
+	--prompt.foreground "#ff0000" \
+	"You are about to modify the $NAMESPACE namespace. Deleting the sealed-secrets controller will render all existing SealedSecrets invalid. Make sure you have backup copies of all your secrets. Are you sure you want to continue?"   
+fi
 
 set -x
 helmfile $DEBUG_LOGS --interactive -f "$NAMESPACE_FILE_PATH" $SELECTOR $COMMAND "$@"
