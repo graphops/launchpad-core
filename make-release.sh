@@ -14,3 +14,4 @@ git merge main
 git tag $TAG
 git push origin --tags
 git push origin release/v1
+git checkout main
