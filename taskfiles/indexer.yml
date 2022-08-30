@@ -1,26 +1,32 @@
 # tasks that let you interact with the indexer for operational requirements
 version: '3'
 
-tasks:
-  remote-toolbox:
-    interactive: true
-    cmds:
-      - kubectl exec --tty --interactive xxxxxxx -- {{.CLI_ARGS}}
+vars: # customise these in your .env in launchpad-starter
+  RELEASE_NAME_KUBE_PROMETHEUS_STACK: '{{.RELEASE_NAME_KUBE_PROMETHEUS_STACK | default "kube-prometheus-stack"}}'
 
-  forward-indexer-agent:
-    cmds:
-      - kubectl -n indexer port-forward service/service-name port:port
+tasks:
+  # remote-toolbox:
+  #   interactive: true
+  #   cmds:
+  #     - kubectl exec --tty --interactive xxxxxxx -- {{.CLI_ARGS}}
+
+  # forward-indexer-agent:
+  #   cmds:
+  #     - kubectl -n indexer port-forward service/service-name port:port
 
   forward-grafana:
+    desc: Open a port forward to the Grafana instance in the cluster
     cmds:
-      - kubectl -n monitoring --context $KUBECONTEXT port-forward service/kube-prometheus-stack-grafana 3001:80
+      - |
+        echo "Once the port forward is open, you can open the Grafana interface at http://localhost:3001"
+        kubectl -n monitoring --context $KUBECONTEXT port-forward service/{{.RELEASE_NAME_KUBE_PROMETHEUS_STACK}}-grafana 3001:80
 
-  forward-erigon:
-    cmds:
-      - 
+  # forward-eth-mainnet:
+  #   cmds:
+  #     - 
 
-  forward-all:
-    deps:
-      - forward-indexer-agent
-      - forward-grafana
-      - forward-erigon
+  # forward-all:
+  #   deps:
+  #     - forward-indexer-agent
+  #     - forward-grafana
+  #     - forward-erigon

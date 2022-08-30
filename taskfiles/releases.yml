@@ -3,25 +3,25 @@ version: '3'
 tasks:
   apply:
     interactive: true
-    desc: Sync releases for a namespace
-    deps: []
-    summary: ""
+    desc: "Apply release(s) for a namespace. Usage: releases:apply -- <namespace> [release-name]"
     cmds:
       - launchpad-core/taskfiles/scripts/helmfile.sh apply {{.CLI_ARGS}}
 
   delete:
     interactive: true
-    desc: Sync releases for a namespace
-    deps: []
-    summary: ""
+    desc: "Delete release(s) for a namespace. Usage: releases:delete -- <namespace> [release-name]"
     cmds:
       - launchpad-core/taskfiles/scripts/helmfile.sh delete {{.CLI_ARGS}}
 
+  status:
+    interactive: true
+    desc: "View status for release(s). Usage: releases:status -- <namespace> [release-name]"
+    cmds:
+      - launchpad-core/taskfiles/scripts/helmfile.sh status {{.CLI_ARGS}}
+
   apply-base:
     interactive: true
-    desc: Sync releases for a namespace
-    deps: []
-    summary: ""
+    desc: Apply all namespaces for base cluster services
     cmds:
       - task releases:apply -- sealed-secrets
       - task releases:apply -- storage
@@ -29,22 +29,7 @@ tasks:
       - task releases:apply -- ingress
       - task releases:apply -- postgres-operator
 
-  apply-indexer:
-    interactive: true
-    desc: Sync releases for a namespace
-    deps: []
-    summary: ""
-    cmds:
-      - task releases:apply -- indexer {{.CLI_ARGS}}
-
-  status:
-    interactive: true
-    desc: Sync releases for a namespace
-    deps: []
-    summary: ""
-    cmds:
-      - launchpad-core/taskfiles/scripts/helmfile.sh status {{.CLI_ARGS}}
-
+  # Ordering is unsafe...
   # apply-all:
   #   cmds:
   #     - |
