@@ -8,10 +8,10 @@ if [ -z "$TAG" ]; then
     echo "Missing tag arg"
 fi
 
-git checkout feature/v1
+git checkout release/v1
 git merge main
 if [ -n "$TAG" ]; then
     git tag $TAG
-    git push --tags
+    git push origin --tags
 fi
-git push feature/v1
+git push origin release/v1
