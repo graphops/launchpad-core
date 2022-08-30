@@ -1,8 +1,8 @@
 #!/bin/sh
 
-set -ex
-
 TAG="$1"; shift
+
+set -ex
 
 if [ -z "$TAG" ]; then
     echo "Missing tag arg"
