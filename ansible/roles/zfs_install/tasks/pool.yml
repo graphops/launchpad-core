@@ -25,6 +25,7 @@
         item.state == "present") and
         item.devices[0] not in zpool_devices.stdout and
         item.action|lower == "create"
+  ignore_errors: "{{ ansible_check_mode }}"
         
 - name: manage_zfs | adding basic zpool(s)
   command: "zpool add {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.devices|join (' ') }}"
@@ -37,6 +38,7 @@
         (item.devices[0]|basename) not in zpool_devices.stdout and
         item.action|lower == "add" and
         (zpool_created.changed or item.name in zpools.stdout)
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | creating mirror/zraid zpool(s)
   command: "zpool create {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
@@ -50,6 +52,8 @@
         item.state == "present") and
         item.devices[0] not in zpool_devices.stdout and
         item.action|lower == "create"
+  ignore_errors: "{{ ansible_check_mode }}"
+
 - name: manage_zfs | adding mirror/zraid zpool(s)
   command: "zpool add {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
@@ -61,3 +65,4 @@
         (item.devices[0]|basename) not in zpool_devices.stdout and
         item.action|lower == "add" and
         (zpool_created.changed or item.name in zpools.stdout)
+  ignore_errors: "{{ ansible_check_mode }}"

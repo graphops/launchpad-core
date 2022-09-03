@@ -30,7 +30,7 @@
   ansible.builtin.apt:
     update_cache: yes
 
-- name: Task to create "{{ main_user }}" user and cp ssh keys
+- name: Tasks to create "{{ main_user }}" user and cp ssh keys
   block:
   - name: Make sure we have an "{{ main_user }}" group
     ansible.builtin.group:
@@ -46,17 +46,19 @@
         - sudo
       append: yes
       state: present
-      createhome: yes
+      create_home: yes
     become: yes
     register: user_details
 
-  - name: Creates ssh directory for "{{ main_user }}"
-    file:
-      path: "{{ user_details.home }}/.ssh"
+  - name: 'Creates ssh directory for "{{ main_user }}"'
+    ansible.builtin.file:
+      path: '{{ user_details.home }}/.ssh'
+      recurse: 'yes'
       state: directory
-      owner: "{{ main_user }}"
-      group: "{{ main_user }}"
-      mode: 0775
+      owner: '{{ main_user }}'
+      group: '{{ main_user }}'
+      mode: '0775'
+    ignore_errors: "{{ ansible_check_mode }}"
 
   - name: Copy ssh file
     copy:
