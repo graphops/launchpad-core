@@ -1,0 +1,65 @@
+version: '3.0'
+
+tasks:
+  ansible:
+    cmds: 
+      - |
+        apt update 
+        apt install --yes software-properties-common
+        apt-add-repository --yes --update ppa:ansible/ansible
+        apt install --yes ansible
+
+  helm:
+    interactive: true
+    cmds:
+      - |
+        apt-get install wget
+        wget https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
+        tar xvf helm-v3.9.4-linux-amd64.tar.gz
+        mv linux-amd64/helm /usr/local/bin
+
+
+  helmfile:
+    cmds:
+      - |
+        wget https://github.com/helmfile/helmfile/releases/download/v0.145.4/helmfile_0.145.4_linux_amd64.tar.gz
+        tar xvf helmfile_0.145.4_linux_amd64.tar.gz
+        mv helmfile /usr/local/bin
+
+  kubectl:
+    cmds:
+      - |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" #todo add support for specific version
+        curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" # download the kubectl checksum file
+        echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check # validate checksum against binary
+        if $? != 0
+          exit 1
+        else
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        fi
+
+  kubeseal:
+    cmds:
+      - |
+        wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
+        tar xfz kubeseal-0.18.0-linux-amd64.tar.gz
+        sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+
+  jq:
+    cmds:
+      - apt install --yes jq
+
+  octant:
+    cmds:
+      - |
+        wget https://github.com/vmware-tanzu/octant/releases/download/v0.25.1/octant_0.25.1_Linux-64bit.deb
+        dpkg -i octant_0.25.1_Linux-64bit.deb
+
+  k9s:
+    cmds:
+      - |
+        wget https://github.com/derailed/k9s/releases/download/v0.26.3/k9s_Linux_x86_64.tar.gz
+        tar xfz k9s_Linux_x86_64.tar.gz
+        mv k9s /usr/local/bin
+
+

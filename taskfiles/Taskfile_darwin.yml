@@ -1,0 +1,34 @@
+version: '3.0'
+
+tasks:
+  ansible:
+      - brew install ansible
+
+  helm:
+    cmds:
+      - brew install helm
+
+  helmfile:
+    cmds:
+      - brew install helmfile
+
+  kubectl:
+    cmds:
+      - brew install kubectl
+
+  kubeseal:
+    cmds:
+      - brew install kubeseal
+
+  jq:
+    cmds:
+      - brew install jq
+
+  octant:
+    cmds:
+      - brew install octant
+
+  k9s:
+    cmds:
+      - brew install k9s
+

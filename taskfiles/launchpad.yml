@@ -1,10 +1,13 @@
 # tasks that let you interact with the indexer for operational requirements
 version: '3'
 
+includes:
+  build: ./Taskfile_{{OS}}.yml
+
 tasks:
   version:
     desc: Display launchpad-core version information
-    silent: true
+    # silent: true
     cmds:
       - | 
         REPO="https://github.com/graphops/launchpad-core"
@@ -12,7 +15,23 @@ tasks:
         CORE_REF=$(cd $(pwd)/launchpad-core; git describe --tags || true)
         LOGO=$(printf " _                        _                     _ \n| | __ _ _   _ _ __   ___| |__  _ __   __ _  __| |\n| |/ _\` | | | | '_ \ / __| '_ \| '_ \ / _\` |/ _\` |\n| | (_| | |_| | | | | (__| | | | |_) | (_| | (_| |\n|_|\__,_|\__,_|_| |_|\___|_| |_| .__/ \__,_|\__,_|\n                               |_|                ")
         TEXT=$(printf "$LOGO\n\n$REPO\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
-        gum style --border-foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
+        gum style --foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
+  deps:
+    desc: "Runs tasks: binfiles, dotfiles"
+    cmds:
+      - cmd: |
+          echo -n -e "This command will install: ansible, helm, helmfile, kubectl, kubeseal, jq, octant. Do you want continue? [Y/n] " 
+          read answer
+          [[ "$answer" == "Y" || "$answer" == "y" ]] || { echo "Canceled by user"; exit 1; }
+          exit 0
+      - task: ansible
+      - task: helm
+      - task: helmfile
+      - task: kubectl
+      - task: kubeseal
+      - task: jq
+      - task: octant
+      - task: k9s
 
 # - ansible
 # - helm
