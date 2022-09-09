@@ -1,6 +1,5 @@
 version: '3.0'
 
-tasks:
   ansible:
       - brew install ansible
 
@@ -31,4 +30,12 @@ tasks:
   k9s:
     cmds:
       - brew install k9s
+  
+  gum:
+    cmds:
+      - brew install gum
+
+  helm-git:
+    cmds:
+      - helm plugin install https://github.com/aslafy-z/helm-git
 

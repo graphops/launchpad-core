@@ -1,8 +1,11 @@
 # tasks that let you interact with the indexer for operational requirements
 version: '3'
 
+# includes:
+#   install: ./Taskfile_{{OS}}.yml
+
 includes:
-  build: ./Taskfile_{{OS}}.yml
+  install: ./Taskfile_{{OS}}.yml
 
 tasks:
   version:
@@ -16,28 +19,36 @@ tasks:
         LOGO=$(printf " _                        _                     _ \n| | __ _ _   _ _ __   ___| |__  _ __   __ _  __| |\n| |/ _\` | | | | '_ \ / __| '_ \| '_ \ / _\` |/ _\` |\n| | (_| | |_| | | | | (__| | | | |_) | (_| | (_| |\n|_|\__,_|\__,_|_| |_|\___|_| |_| .__/ \__,_|\__,_|\n                               |_|                ")
         TEXT=$(printf "$LOGO\n\n$REPO\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
         gum style --foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
-  deps:
-    desc: "Runs tasks: binfiles, dotfiles"
+  
+  install-deps:
+    desc: 'Installs all external dependencies using OS package manager.'
     cmds:
-      - cmd: |
-          echo -n -e "This command will install: ansible, helm, helmfile, kubectl, kubeseal, jq, octant. Do you want continue? [Y/n] " 
-          read answer
-          [[ "$answer" == "Y" || "$answer" == "y" ]] || { echo "Canceled by user"; exit 1; }
-          exit 0
-      - task: ansible
-      - task: helm
-      - task: helmfile
-      - task: kubectl
-      - task: kubeseal
-      - task: jq
-      - task: octant
-      - task: k9s
+      - task: install:ansible
+      - task: install:helm
+      - task: install:helmfile
+      - task: install:gum
+      - task: install:kubectl
+      - task: install:kubeseal
+      - task: install:jq
+      - task: install:gum
+      - task: install:octant
+      - task: install:k9s
+      - task: install:helm-git
 
-# - ansible
-# - helm
-# - helmfile
-# - taskfile
-# - kubeseal
-# - ssh
-# - octant
-# - helm-git
+    # desc: "Runs tasks: binfiles, dotfiles"
+    # cmds:
+    #   - cmd: |
+    #       echo -n -e "This command will install: ansible, helm, helmfile, kubectl, kubeseal, jq, octant, helm-git, gum. Do you want continue? [Y/n] " 
+    #       read answer
+    #       [[ "$answer" == "Y" || "$answer" == "y" ]] || { echo "Canceled by user"; exit 1; }
+    #       exit 0
+    #   - task: ansible
+    #   - task: helm
+    #   - task: helmfile
+    #   - task: kubectl
+    #   - task: kubeseal
+    #   - task: jq
+    #   - task: octant
+    #   - task: k9s
+    #   - task: helm-git
+    #   - task: gum
