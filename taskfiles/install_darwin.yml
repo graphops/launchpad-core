@@ -11,7 +11,7 @@ tasks:
         if which brew ; then
           exit 0
         else
-          echo -e "Brew is a prerequisite of this task. Pls refer to https://brew.sh/ for details"
+          echo -e "Brew is a prerequisite of this task. Please refer to https://brew.sh/ for details"
           exit 1
         fi
 
