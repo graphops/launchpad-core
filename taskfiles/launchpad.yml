@@ -10,18 +10,27 @@ tasks:
     silent: true
     cmds:
       - | 
-        REPO="https://github.com/graphops/launchpad-core"
         CORE_COMMIT=$(cd $(pwd)/launchpad-core; git rev-parse HEAD)
         CORE_REF=$(cd $(pwd)/launchpad-core; git describe --tags || true)
         LOGO=$(printf " _                        _                     _ \n| | __ _ _   _ _ __   ___| |__  _ __   __ _  __| |\n| |/ _\` | | | | '_ \ / __| '_ \| '_ \ / _\` |/ _\` |\n| | (_| | |_| | | | | (__| | | | |_) | (_| | (_| |\n|_|\__,_|\__,_|_| |_|\___|_| |_| .__/ \__,_|\__,_|\n                               |_|                ")
-        TEXT=$(printf "$LOGO\n\n$REPO\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
-        gum style --foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
-  
-  deps:
-    desc: 'Installs all external dependencies using OS package manager.'
+        TEXT=$(printf "$LOGO\n\nhttps://github.com/graphops/launchpad-starter\nhttps://github.com/graphops/launchpad-core\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
+        gum style --border-foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
+
+  pull-upstream-starter:
+    desc: Pull and rebase changes from upstream launchpad-starter into current local branch
     cmds:
-      - cmd: |
-          echo "Hello I did get here"
+      - git remote add upstream-starter https://github.com/graphops/launchpad-starter || true && echo "OK"
+      - |
+        if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
+      - git status
+      - |
+        gum confirm "$(printf "Are you sure you want to pull and rebase the main branch of launchpad-starter into the current local branch?\nYou will need to manually resolve conflicts between remote changes and local changes.\n\nLearn more about git pull --rebase: https://gitolite.com/git-pull--rebase")"
+      - git pull upstream-starter main --rebase
+      - git status
+
+  deps:
+    desc: 'Installs all external dependencies using package manager'
+    cmds:
       - task: deps:brew-status
       - task: deps:ansible
       - task: deps:helm
