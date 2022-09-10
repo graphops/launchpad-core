@@ -3,15 +3,15 @@
   shell: "zpool list | awk 'FNR >1' | awk '{print $1}'"
   changed_when: false
   register: zpools
-  check_mode: no
   when: zfs_pools is defined
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | Gather ZPool Status
   shell: zpool status
   changed_when: false
   register: zpool_devices
-  check_mode: no
   when: zfs_pools is defined
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | creating basic zpool(s)
   command: "zpool create {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.devices|join (' ') }}"

@@ -51,6 +51,7 @@
     register: user_details
 
   - name: 'Creates ssh directory for "{{ main_user }}"'
+    ignore_errors: "{{ ansible_check_mode }}"
     ansible.builtin.file:
       path: '{{ user_details.home }}/.ssh'
       recurse: 'yes'
@@ -58,9 +59,9 @@
       owner: '{{ main_user }}'
       group: '{{ main_user }}'
       mode: '0775'
-    ignore_errors: "{{ ansible_check_mode }}"
 
   - name: Copy ssh file
+    ignore_errors: "{{ ansible_check_mode }}"
     copy:
       src: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
       remote_src: yes   
@@ -70,6 +71,7 @@
     when: main_user_ssh_key is undefined
 
   - name: Copy ssh key
+    ignore_errors: "{{ ansible_check_mode }}"
     lineinfile:
       path: "{{ user_details.home }}/.ssh/authorized_keys"
       line: "{{ main_user_ssh_key }}"

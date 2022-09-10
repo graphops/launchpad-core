@@ -3,9 +3,6 @@ version: '3'
 env:
   PATH: "{{.PWD}}/bin:{{.PATH}}"
 
-vars:
-  HELM_VERSION: '{{.HELM_VERSION | default "3.9.4"}}'
-
 tasks:
   brew-status:
     interactive: true
@@ -23,10 +20,7 @@ tasks:
 
   helm:
     cmds:
-      - |
-        brew tap-new local/helm
-        brew extract --version={{.HELM_VERSION}} helm local/helm
-        brew install local/helm/helm@{{.HELM_VERSION}}
+      - brew install helm
 
   helmfile:
     cmds:
