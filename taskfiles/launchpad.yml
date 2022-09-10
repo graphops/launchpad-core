@@ -7,7 +7,7 @@ includes:
 tasks:
   version:
     desc: Display launchpad-core version information
-    # silent: true
+    silent: true
     cmds:
       - | 
         REPO="https://github.com/graphops/launchpad-core"
