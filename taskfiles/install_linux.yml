@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3'
 
 vars:
   HELM_VERSION: '{{.HELM_VERSION | default "3.9.4"}}'
@@ -7,6 +7,8 @@ vars:
   KUBESEAL_VERSION: '{{.KUBESEAL_VERSION | default "0.18.0"}}'
   OCTANT_VERSION: '{{.OCTANT_VERSION | default "0.25.1"}}'
   K9S_VERSION: '{{.K9S_VERSION | default "0.26.3"}}'
+
+# These commands are intended to run on Debian/Ubuntu dist only - contributions to support more dist are welcome! 
 
 tasks:
   ansible:
@@ -79,5 +81,3 @@ tasks:
       - |
         echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
         sudo apt update && sudo apt install gum
-
-

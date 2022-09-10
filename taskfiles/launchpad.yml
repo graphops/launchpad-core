@@ -1,11 +1,8 @@
 # tasks that let you interact with the indexer for operational requirements
 version: '3'
 
-# includes:
-#   install: ./Taskfile_{{OS}}.yml
-
 includes:
-  install: ./Taskfile_{{OS}}.yml
+  deps: ./install_{{OS}}.yml
 
 tasks:
   version:
@@ -20,35 +17,20 @@ tasks:
         TEXT=$(printf "$LOGO\n\n$REPO\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
         gum style --foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
   
-  install-deps:
+  deps:
     desc: 'Installs all external dependencies using OS package manager.'
     cmds:
-      - task: install:ansible
-      - task: install:helm
-      - task: install:helmfile
-      - task: install:gum
-      - task: install:kubectl
-      - task: install:kubeseal
-      - task: install:jq
-      - task: install:gum
-      - task: install:octant
-      - task: install:k9s
-      - task: install:helm-git
-
-    # desc: "Runs tasks: binfiles, dotfiles"
-    # cmds:
-    #   - cmd: |
-    #       echo -n -e "This command will install: ansible, helm, helmfile, kubectl, kubeseal, jq, octant, helm-git, gum. Do you want continue? [Y/n] " 
-    #       read answer
-    #       [[ "$answer" == "Y" || "$answer" == "y" ]] || { echo "Canceled by user"; exit 1; }
-    #       exit 0
-    #   - task: ansible
-    #   - task: helm
-    #   - task: helmfile
-    #   - task: kubectl
-    #   - task: kubeseal
-    #   - task: jq
-    #   - task: octant
-    #   - task: k9s
-    #   - task: helm-git
-    #   - task: gum
+      - cmd: |
+          echo "Hello I did get here"
+      - task: deps:brew-status
+      - task: deps:ansible
+      - task: deps:helm
+      - task: deps:helmfile
+      - task: deps:gum
+      - task: deps:kubectl
+      - task: deps:kubeseal
+      - task: deps:jq
+      - task: deps:gum
+      - task: deps:octant
+      - task: deps:k9s
+      - task: deps:helm-git
