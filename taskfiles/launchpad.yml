@@ -9,12 +9,12 @@ tasks:
     desc: Display launchpad-core version information
     silent: true
     cmds:
-      - | 
-        CORE_COMMIT=$(cd $(pwd)/launchpad-core; git rev-parse HEAD)
-        CORE_REF=$(cd $(pwd)/launchpad-core; git describe --tags || true)
+      - |
+        SUBMODULE_STATUS=$(git submodule status)
+        SUBMODULE_STATUS=${SUBMODULE_STATUS:-unknown}
         LOGO=$(printf " _                        _                     _ \n| | __ _ _   _ _ __   ___| |__  _ __   __ _  __| |\n| |/ _\` | | | | '_ \ / __| '_ \| '_ \ / _\` |/ _\` |\n| | (_| | |_| | | | | (__| | | | |_) | (_| | (_| |\n|_|\__,_|\__,_|_| |_|\___|_| |_| .__/ \__,_|\__,_|\n                               |_|                ")
-        TEXT=$(printf "$LOGO\n\nhttps://github.com/graphops/launchpad-starter\nhttps://github.com/graphops/launchpad-core\nlaunchpad-core submodule version: $CORE_COMMIT $CORE_REF")
-        gum style --border-foreground "#48a795" --border double --align center --margin "1 2" --padding "2 4" "$TEXT"
+        TEXT=$(printf "$LOGO\n\nhttps://github.com/graphops/launchpad-starter\nhttps://github.com/graphops/launchpad-core\n\nlaunchpad-core submodule status:\n$SUBMODULE_STATUS")
+        gum style --border-foreground "#48a795" --border double --align center --margin "1" --padding "1 2" "$TEXT"
 
   pull-upstream-starter:
     desc: Pull and rebase changes from upstream launchpad-starter into current local branch
