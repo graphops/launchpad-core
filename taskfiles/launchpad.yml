@@ -20,8 +20,8 @@ tasks:
     desc: Pull and rebase changes from upstream launchpad-starter into current local branch
     cmds:
       - git remote add upstream-starter https://github.com/graphops/launchpad-starter || true && echo "OK"
-      # - |
-      #   if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
+      - |
+        if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
       - git status
       - |
         TEXT="
