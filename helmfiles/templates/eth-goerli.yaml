@@ -1,0 +1,37 @@
+# Repositories for Charts used for Releases in this namespace
+repositories:
+  - name: graphops
+    url: https://graphops.github.io/helm-charts
+
+# Anchors for each default release definition, their default values, and any inner resources that are relevant
+templates:
+  launchpad-release-template-defaults: &launchpad-release-template-defaults
+    namespace: eth-goerli
+    missingFileHandler: Warn
+
+  launchpad-release-template-erigon-eth-goerli: &launchpad-release-template-erigon-eth-goerli
+    <<: *launchpad-release-template-defaults
+    chart: graphops/erigon
+    version: 0.2.3
+    valuesTemplate:
+      - &launchpad-default-release-values-erigon-eth-goerli
+        statefulNode:
+          extraArgs:
+            - --network=goerli
+        prometheus:
+          serviceMonitors:
+            enabled: true
+        grafana:
+          dashboards: true
+
+  launchpad-release-template-proxyd-eth-goerli: &launchpad-release-template-proxyd-eth-goerli
+    <<: *launchpad-release-template-defaults
+    chart: graphops/proxyd
+    version: 0.1.4
+    valuesTemplate:
+      - &launchpad-default-release-values-proxyd-eth-goerli
+        prometheus:
+          serviceMonitors:
+            enabled: true
+        grafana:
+          dashboards: true

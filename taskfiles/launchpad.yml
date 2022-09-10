@@ -1,8 +1,8 @@
-# tasks that let you interact with the indexer for operational requirements
+# tasks that relate to launchpad, launchpad-core and repo setup
 version: '3'
 
 includes:
-  deps: ./install_{{OS}}.yml
+  deps: ./launchpad_deps_{{OS}}.yml
 
 tasks:
   version:
