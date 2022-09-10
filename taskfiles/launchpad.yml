@@ -20,11 +20,20 @@ tasks:
     desc: Pull and rebase changes from upstream launchpad-starter into current local branch
     cmds:
       - git remote add upstream-starter https://github.com/graphops/launchpad-starter || true && echo "OK"
-      - |
-        if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
+      # - |
+      #   if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
       - git status
       - |
-        gum confirm "$(printf "Are you sure you want to pull and rebase the main branch of launchpad-starter into the current local branch?\nYou will need to manually resolve conflicts between remote changes and local changes.\n\nLearn more about git pull --rebase: https://gitolite.com/git-pull--rebase")"
+        TEXT="
+        Are you sure you want to pull and rebase the main branch of launchpad-starter into the current local branch?
+        
+        You will need to manually resolve conflicts between remote changes and local changes,
+        and your history will be divergent with remote branches. You will need to force push over them.
+        
+        Learn more about rebasing: https://git-scm.com/book/en/v2/Git-Branching-Rebasing
+        Learn more about git pull --rebase: https://gitolite.com/git-pull--rebase
+        "
+        gum confirm "$TEXT"
       - git pull upstream-starter main --rebase
       - git status
 
