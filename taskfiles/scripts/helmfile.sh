@@ -7,18 +7,17 @@ RELEASE=$1; shift
 set -e
 
 NS_DIR="$(pwd)/helmfiles/namespace-releases"
+NAMESPACE_FILE_PATH="${NS_DIR}/${NAMESPACE}.yaml"
 
 usage(){
     echo "Invalid usage."
     echo
     echo "Arguments:"
-    echo "<command> The Helmfile command to use. Current value is $([ -z "$COMMAND" ] && echo ❌ Missing || echo ✅ $COMMAND)."
-    echo "<namespace> Must be a file that exists in $NS_DIR. Current value is $([ -z "$NAMESPACE" ] && echo ❌ Missing || echo ✅ $NAMESPACE)."
+    echo "<command> The Helmfile command to use. $([ -z "$COMMAND" ] && echo ❌ Not specified || echo ✅ Current value is $COMMAND)."
+    echo "<namespace> Must be a valid namespace releases file. $([ -z "$NAMESPACE" ] && echo ❌ Not specified || echo Current value is $NAMESPACE. $([ ! -f "$NAMESPACE_FILE_PATH" ] && echo ❌ Expected file $NAMESPACE_FILE_PATH does not exist || echo Expected file ✅ $NAMESPACE_FILE_PATH exists))."
     echo "[release-name] Optionally select a single release"
     exit 1
 }
-
-NAMESPACE_FILE_PATH="${NS_DIR}/${NAMESPACE}.yaml"
 
 if [ -z "$NAMESPACE" ] || [ ! -f "$NAMESPACE_FILE_PATH" ]; then
     usage
@@ -34,7 +33,7 @@ if [ "$LAUNCHPAD_VERBOSE_LOGS" = "true" ]; then
     DEBUG_LOGS="--debug"
 fi
 
-if [ "$NAMESPACE" = "sealed-secrets" ]; then
+if [ "$NAMESPACE" = "sealed-secrets" ] && ["$COMMAND" != "status"]; then
     TEXT="You are about to modify the $NAMESPACE namespace.
 
 Deleting the sealed-secrets controller will render all existing SealedSecrets invalid.
