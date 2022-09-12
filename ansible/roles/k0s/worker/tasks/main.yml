@@ -1,5 +1,5 @@
 ---
-- name: Check if host is already a controller
+- name: Check if host is already a worker
   shell: systemctl cat k0sworker.service
   register: k0sworker
   ignore_errors: yes
@@ -12,6 +12,7 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: 0600
+  when: k0sworker is failed
 
 - name: Create k0s worker service with install command
   register: install_worker_cmd
@@ -26,3 +27,4 @@
     daemon_reload: yes
     state: restarted
     enabled: yes
+  when: k0sworker is failed
