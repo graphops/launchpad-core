@@ -1,33 +1,40 @@
 ---
+- name: Check if host is already a controller
+  shell: systemctl cat k0scontroller.service
+  register: k0scontroller
+  ignore_errors: yes
 
-- name: "Write the k0s token file on controller"
-  ansible.builtin.template:
-    src: controller-token.j2
-    dest: "{{ k0s_config_dir }}/controller-token"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0600
+- name: Tasks to set node as controller if it's not already part of the cluster
+  block:
+  - name: "Write the k0s token file on controller"
+    ansible.builtin.template:
+      src: controller-token.j2
+      dest: "{{ k0s_config_dir }}/controller-token"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0600
 
-- name: Create k0s controller service with install command
-  register: install_controller_cmd
-  command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --token-file {{ k0s_config_dir }}/controller-token --enable-k0s-cloud-provider=true {{ extra_args | default(omit) }}
-  changed_when: install_controller_cmd | length > 0
+  - name: Create k0s controller service with install command
+    register: install_controller_cmd
+    command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --token-file {{ k0s_config_dir }}/controller-token --enable-k0s-cloud-provider=true {{ extra_args | default(omit) }}
+    changed_when: install_controller_cmd | length > 0
 
-- name: Setup custom environment variables for systemd unit
-  ansible.builtin.include_role:
-    name: k0s/env_setup
+  - name: Setup custom environment variables for systemd unit
+    ansible.builtin.include_role:
+      name: k0s/env_setup
 
-- name: "Enable and check k0s service"
-  become: true
-  ansible.builtin.systemd:
-    name: k0scontroller
-    daemon_reload: yes
-    state: restarted
-    enabled: yes
+  - name: "Enable and check k0s service"
+    become: true
+    ansible.builtin.systemd:
+      name: k0scontroller
+      daemon_reload: yes
+      state: restarted
+      enabled: yes
 
-- name: "Wait for k8s apiserver"
-  become: true
-  ansible.builtin.wait_for:
-    host: localhost
-    port: 6443
-    timeout: 300
+  - name: "Wait for k8s apiserver"
+    become: true
+    ansible.builtin.wait_for:
+      host: localhost
+      port: 6443
+      timeout: 300
+  when: k0scontroller is failed

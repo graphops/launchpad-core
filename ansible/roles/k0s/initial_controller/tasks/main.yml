@@ -4,29 +4,32 @@
   register: k0scontroller
   ignore_errors: yes
 
-- name: Create k0s initial controller service with install command
-  register: install_initial_controller_cmd
-  command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --enable-k0s-cloud-provider=true {{ extra_args | default(omit) }}
-  changed_when: install_initial_controller_cmd | length > 0
+- name: Tasks to set node as controller if it's not already part of the cluster
+  block:
+  - name: Create k0s initial controller service with install command
+    register: install_initial_controller_cmd
+    command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --enable-k0s-cloud-provider=true {{ extra_args | default(omit) }}
+    changed_when: install_initial_controller_cmd | length > 0
+    
+
+  - name: Setup custom environment variables for systemd unit
+    ansible.builtin.include_role:
+      name: k0s/env_setup
+
+  - name: Enable and check k0s service
+    ansible.builtin.systemd:
+      name: k0scontroller
+      daemon_reload: yes
+      state: restarted
+      enabled: yes
+
+  - name: Wait for k8s apiserver
+    ansible.builtin.wait_for:
+      host: localhost
+      port: 6443
+      delay: 15
+      timeout: 300
   when: k0scontroller is failed
-
-- name: Setup custom environment variables for systemd unit
-  ansible.builtin.include_role:
-    name: k0s/env_setup
-
-- name: Enable and check k0s service
-  ansible.builtin.systemd:
-    name: k0scontroller
-    daemon_reload: yes
-    state: restarted
-    enabled: yes
-
-- name: Wait for k8s apiserver
-  ansible.builtin.wait_for:
-    host: localhost
-    port: 6443
-    delay: 15
-    timeout: 300
 
 
 - name: Create worker join token
