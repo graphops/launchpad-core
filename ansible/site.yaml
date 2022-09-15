@@ -9,3 +9,12 @@
   roles:
     - role: sshd_config
       become: true
+
+- name: Installs ZFS On Linux
+  hosts: hetzner
+  become: true
+  vars:
+    ansible_port: '{{ hardened_ssh_port }}'
+  roles:
+    - role: zfs_install
+      when: zfs_pools | length > 0
