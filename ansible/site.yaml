@@ -11,7 +11,7 @@
       become: true
 
 - name: Installs ZFS On Linux
-  hosts: hetzner
+  hosts: init_group
   become: true
   vars:
     ansible_port: '{{ hardened_ssh_port }}'
