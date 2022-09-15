@@ -1,6 +1,0 @@
----
-- name: Installs ZFS On Linux
-  hosts: init_group
-  become: true
-  roles:
-    - role: zfs_install
