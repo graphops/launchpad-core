@@ -28,7 +28,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
         
 - name: manage_zfs | adding basic zpool(s)
-  command: "zpool add {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.devices|join (' ') }}"
+  command: "zpool add {{ '-o' if zfs_pool_options else '' }} {{ zfs_pool_options | join(' -o ') }} {{ item.name }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
   when: >
         zfs_pools is defined and
@@ -41,7 +41,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | creating mirror/zraid zpool(s)
-  command: "zpool create {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
+  command: "zpool create {{ '-o' if zfs_pool_options else '' }} {{ zfs_pool_options | join(' -o ') }} {{ '-O' if zfs_fs_options else '' }} {{ zfs_fs_options | join(' -O ') }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
   register: zpool_created
   when: >
@@ -55,7 +55,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | adding mirror/zraid zpool(s)
-  command: "zpool add {{ item.options | join (' ') if item.options is defined else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
+  command: "zpool add {{ '-o' if zfs_pool_options else '' }} {{ zfs_pool_options | join(' -o ') }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
   when: >
         zfs_pools is defined and
