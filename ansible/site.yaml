@@ -14,7 +14,7 @@
   hosts: init_group
   become: true
   vars:
-  - ansible_port: '{{ hardened_ssh_port }}' 
+    ansible_port: '{{ hardened_ssh_port }}'
   roles:
     - role: zfs_install
       when: zfs_pools | length > 0
