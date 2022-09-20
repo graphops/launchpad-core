@@ -1,14 +1,14 @@
-# - name: Initial host hardening
-#   hosts: init_group
-#   roles:
-#     - role: base
-#       become: true
+- name: Initial host hardening
+  hosts: init_group
+  roles:
+    - role: base
+      become: true
 
-# - name: Update sshd config
-#   hosts: init_group
-#   roles:
-#     - role: sshd_config
-#       become: true
+- name: Update sshd config
+  hosts: init_group
+  roles:
+    - role: sshd_config
+      become: true
 
 - name: Installs ZFS On Linux
   hosts: init_group
