@@ -16,6 +16,7 @@
   when: apt_status is failed
 
 - name: Install necessary packages with apt update
+  ignore_errors: "{{ ansible_check_mode }}"
   ansible.builtin.apt:
     update_cache: yes
     state: latest
