@@ -43,11 +43,9 @@ fi
 
 if [ -z "$VALUE" ]; then
   usage
-else
-  encodedValue="$(printf "%s" "${VALUE}" | base64 | tr -d '\n')"
 fi
 
-secretManifest=$(echo -n "${encodedValue}" | kubectl create secret generic "${SECRET_NAME}" --dry-run=client --namespace "${NAMESPACE}"  --from-file="${KEY}"=/dev/stdin -o json 2>&1)
+secretManifest=$(echo -n "${VALUE}" | kubectl create secret generic "${SECRET_NAME}" --dry-run=client --namespace "${NAMESPACE}"  --from-literal="${KEY}"="${VALUE}" -o json 2>&1)
 sealedManifest=`echo $secretManifest | kubeseal --namespace "${NAMESPACE}" --controller-namespace sealed-secrets --controller-name sealed-secrets  2>&1`
 sealedValue=`echo $sealedManifest | jq --arg 'key' "${KEY}" '.spec.encryptedData[$key]' -r`
 
