@@ -40,8 +40,8 @@
         (zpool_created.changed or item.name in zpools.stdout)
   ignore_errors: "{{ ansible_check_mode }}"
 
-- name: manage_zfs | creating mirror/zraid zpool(s)
-  command: "zpool create {{ '-o' if zfs_pool_options else '' }} {{ zfs_pool_options | join(' -o ') }} {{ '-O' if zfs_fs_options else '' }} {{ zfs_fs_options | join(' -O ') }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
+- name: manage_zfs | creating mirror/raidz zpool(s)
+  command: "zpool create {{ '-o' if zfs_pool_options else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
   register: zpool_created
   when: >
@@ -66,3 +66,23 @@
         item.action|lower == "add" and
         (zpool_created.changed or item.name in zpools.stdout)
   ignore_errors: "{{ ansible_check_mode }}"
+
+- name: manage_zfs | managing pools
+  community.general.zfs:
+    name: "{{ item.name }}"
+    extra_zfs_properties:
+      atime: "{{ item.atime|default(omit) }}"
+      compression: "{{ item.compression|default(omit) }}"
+      dedup: "{{ item.dedup|default(omit) }}"
+      logbias: "{{ item.logbias|default(omit) }}"
+      mountpoint: "{{ item.mountpoint|default(omit) }}"
+      primarycache: "{{ item.primarycache|default(omit) }}"
+      quota: "{{ item.quota|default(omit) }}"
+      recordsize: "{{ item.recordsize|default(omit) }}"
+      sharenfs: "{{ item.sharenfs|default(omit) }}"
+      sync: "{{ item.sync|default(omit) }}"
+      snapdev: "{{ item.snapdev|default('hidden')}}"
+      snapdir: "{{ item.snapdir|default('hidden')}}"
+    state: "{{ item.state }}"
+  with_items: "{{ zfs_pools }}"
+  when: zfs_create_pools
