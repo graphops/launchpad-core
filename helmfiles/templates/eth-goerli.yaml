@@ -12,12 +12,24 @@ templates:
   launchpad-release-template-erigon-eth-goerli: &launchpad-release-template-erigon-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.2.3
+    version: 0.3.4
     valuesTemplate:
       - &launchpad-default-release-values-erigon-eth-goerli
         statefulNode:
           extraArgs:
             - --network=goerli
+        prometheus:
+          serviceMonitors:
+            enabled: true
+        grafana:
+          dashboards: true
+
+  launchpad-release-template-nimbus-eth-goerli: &launchpad-release-template-nimbus-eth-goerli
+    <<: *launchpad-release-template-defaults
+    chart: graphops/nimbus
+    version: 0.1.0
+    valuesTemplate:
+      - &launchpad-default-release-values-nimbus-eth-goerli
         prometheus:
           serviceMonitors:
             enabled: true
