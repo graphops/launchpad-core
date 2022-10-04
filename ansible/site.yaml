@@ -9,6 +9,7 @@
   roles:
     - role: sshd_config
       become: true
+      when: enable_sshd_config | bool
 
 - name: Installs ZFS On Linux
   hosts: init_group
@@ -18,3 +19,25 @@
   roles:
     - role: zfs_install
       when: zfs_pools | length > 0
+
+- name: LVM management
+  hosts: init_group
+  become: true
+  vars:
+    ansible_port: '{{ hardened_ssh_port }}'
+  tasks:
+    - name: Create a volume group on top of specified devices
+      community.general.lvg:
+        vg: "{{ lvm_vg }}"
+        pvs: "{{ lvm_vg_devices }}"
+      when: lvm_vg is defined
+
+    - name: Create a LVM volume group
+      community.general.lvol:
+        lv: "{{ lvm_lv }}"
+        pvs: "{{ lvm_vg_devices }}"
+        state: present
+        vg: "{{ lvm_vg }}"
+        size: "{{ lvm_vg_size | default(omit) }}"
+        opts: "{{ lvm_vg_opts | default(omit) }}"
+      when: lvm_lv is defined

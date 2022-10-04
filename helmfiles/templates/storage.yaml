@@ -4,8 +4,6 @@ repositories:
     url: https://openebs.github.io/charts
   - name: openebs-zfs-localpv
     url: https://openebs.github.io/zfs-localpv
-  - name: openebs-rawfile-localpv
-    url: git+https://github.com/openebs/rawfile-localpv@deploy/charts?ref=0.8.0
   - name: openebs-monitoring
     url: https://openebs.github.io/monitoring/
   - name: graphops
@@ -25,8 +23,8 @@ templates:
 
   launchpad-release-template-openebs-rawfile-localpv: &launchpad-release-template-openebs-rawfile-localpv
     <<: *launchpad-release-template-defaults
-    chart: openebs-rawfile-localpv/rawfile-csi
-    # version: 0.0.0 # Specify the version by pinning the git repo reference in repositories above
+    chart: graphops/openebs-rawfile-localpv
+    version: 0.7.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
       - &launchpad-default-release-values-openebs-rawfile-localpv {}
 
