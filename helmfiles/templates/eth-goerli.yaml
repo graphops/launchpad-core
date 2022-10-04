@@ -39,7 +39,7 @@ templates:
   launchpad-release-template-proxyd-eth-goerli: &launchpad-release-template-proxyd-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
-    version: 0.1.4
+    version: 0.1.5
     valuesTemplate:
       - &launchpad-default-release-values-proxyd-eth-goerli
         prometheus:
