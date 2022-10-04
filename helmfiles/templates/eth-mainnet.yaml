@@ -24,7 +24,7 @@ templates:
   launchpad-release-template-nimbus-eth-mainnet: &launchpad-release-template-nimbus-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/nimbus
-    version: 0.1.0
+    version: 0.1.1
     valuesTemplate:
       - &launchpad-default-release-values-nimbus-eth-mainnet
         prometheus:
