@@ -51,7 +51,6 @@ templates:
                 initdb:
                   encoding: "UTF8"
                   locale: "C" # Improves performance and important for determinism
-                  data-checksums: "true"
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
