@@ -3,12 +3,6 @@ version: '3'
 
 tasks:
   seal-secrets:
-    desc: 
-      - |
-        Uses kubeseal to encrypt values that `seal-secrets` controller can translate into a `kind: Secret` resource.
-        To tell `seal-secrets` to create a `kind: Secret` resource, add the value returned from this task in a new resource similar to this <TODO add launchpad-starter ref>
-        The referenced `SealedSecret` was created by running :
-        `task: seal-secrets -- -n test -s super-secret -k TESTER_SECRET -v xyz -c default`
-        Please note that `SealedSecrets` are namespace and context specific.
+    desc: "Util to encrypt secret values and create in cluster only k8s secrets"
     cmds:
       - launchpad-core/taskfiles/scripts/seal-secret-value.sh {{.CLI_ARGS}}

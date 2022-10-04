@@ -86,7 +86,7 @@
       line: "{{ main_user }} ALL=(ALL) NOPASSWD: ALL"
       validate: 'visudo -cf %s'
   when:
-    # when main_user is not empty the all tasks in this block will run
+    # when main_user is not empty all tasks in the above block will run
     - main_user != ansible_user
   ignore_errors: "{{ ansible_check_mode }}"
   tags:
