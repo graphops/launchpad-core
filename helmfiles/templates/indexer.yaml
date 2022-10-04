@@ -17,11 +17,11 @@ templates:
     valuesTemplate:
       - &launchpad-default-release-values-postgresql-cr
         resources:
-          postgres-cr: &launchpad-default-release-values-postgresql-cr-resource
+          postgres-cr-primary-subgraph-data:
             apiVersion: "acid.zalan.do/v1"
             kind: postgresql
             metadata:
-              name: pg-graph-node
+              name: pg-primary-subgraph-data
             spec:
               teamId: "pg"
               numberOfInstances: 1
@@ -37,16 +37,52 @@ templates:
               postgresql:
                 version: "14"
                 parameters: {}
-              volume:
-                size: 8Gi
-                storageClass: openebs-hostpath
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 2Gi
-                limits:
-                  cpu: 1000m
-                  memory: 4Gi
+              # Specify these using overrides
+              # volume:
+              #   size: 8Gi
+              #   storageClass: openebs-hostpath
+              # resources:
+              #   requests:
+              #     cpu: 100m
+              #     memory: 2Gi
+              #   limits:
+              #     cpu: 1000m
+              #     memory: 4Gi
+              patroni:
+                initdb:
+                  encoding: "UTF8"
+                  locale: "C" # Improves performance and important for determinism
+          postgres-cr-indexer-metadata:
+            apiVersion: "acid.zalan.do/v1"
+            kind: postgresql
+            metadata:
+              name: pg-indexer-metadata
+            spec:
+              teamId: "pg"
+              numberOfInstances: 1
+              users:
+                indexer:
+                  - superuser
+              enableMasterLoadBalancer: false
+              enableReplicaLoadBalancer: false
+              enableConnectionPooler: false # enable/disable connection pooler deployment
+              enableReplicaConnectionPooler: false # set to enable connectionPooler for replica service
+              databases:
+                indexer: indexer
+              postgresql:
+                version: "14"
+                parameters: {}
+              # Specify these using overrides
+              # volume:
+              #   size: 8Gi
+              #   storageClass: openebs-hostpath
+              # resources:
+              #   requests:
+              #     cpu: 100m
+              #     memory: 2Gi
+              #   limits:
+              #     cpu: 1000m
+              #     memory: 4Gi
               patroni:
                 initdb:
                   encoding: "UTF8"
