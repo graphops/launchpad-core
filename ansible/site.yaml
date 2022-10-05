@@ -30,7 +30,9 @@
       community.general.lvg:
         vg: "{{ lvm_vg }}"
         pvs: "{{ lvm_vg_devices }}"
-      when: lvm_vg is defined
+      when:
+      - lvm_vg is defined
+      - enable_lvm_config | bool
 
     - name: Create a LVM volume group
       community.general.lvol:
@@ -40,4 +42,6 @@
         vg: "{{ lvm_vg }}"
         size: "{{ lvm_vg_size | default(omit) }}"
         opts: "{{ lvm_vg_opts | default(omit) }}"
-      when: lvm_lv is defined
+      when:
+      - lvm_lv is defined
+      - enable_lvm_config | bool
