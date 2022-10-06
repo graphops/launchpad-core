@@ -4,6 +4,8 @@ repositories:
     url: https://graphops.github.io/helm-charts
   - name: graph-node-chart-dev
     url: git+https://github.com/graphops/helm-charts@charts?ref=feature/graph-node
+  - name: graph-network-indexer-chart-dev
+    url: git+https://github.com/graphops/helm-charts@charts?ref=graph-network-indexer/init
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
@@ -15,78 +17,7 @@ templates:
     chart: graphops/resource-injector
     version: 0.2.0
     valuesTemplate:
-      - &launchpad-default-release-values-postgresql-cr
-        resources:
-          postgres-cr-primary-subgraph-data:
-            apiVersion: "acid.zalan.do/v1"
-            kind: postgresql
-            metadata:
-              name: pg-primary-subgraph-data
-            spec:
-              teamId: "pg"
-              numberOfInstances: 1
-              users:
-                graph:
-                  - superuser
-              enableMasterLoadBalancer: false
-              enableReplicaLoadBalancer: false
-              enableConnectionPooler: false # enable/disable connection pooler deployment
-              enableReplicaConnectionPooler: false # set to enable connectionPooler for replica service
-              databases:
-                graph: graph
-              postgresql:
-                version: "14"
-                parameters: {}
-              # Specify these using overrides
-              # volume:
-              #   size: 8Gi
-              #   storageClass: openebs-hostpath
-              # resources:
-              #   requests:
-              #     cpu: 100m
-              #     memory: 2Gi
-              #   limits:
-              #     cpu: 1000m
-              #     memory: 4Gi
-              patroni:
-                initdb:
-                  encoding: "UTF8"
-                  locale: "C" # Improves performance and important for determinism
-          postgres-cr-indexer-metadata:
-            apiVersion: "acid.zalan.do/v1"
-            kind: postgresql
-            metadata:
-              name: pg-indexer-metadata
-            spec:
-              teamId: "pg"
-              numberOfInstances: 1
-              users:
-                indexer:
-                  - superuser
-              enableMasterLoadBalancer: false
-              enableReplicaLoadBalancer: false
-              enableConnectionPooler: false # enable/disable connection pooler deployment
-              enableReplicaConnectionPooler: false # set to enable connectionPooler for replica service
-              databases:
-                indexer: indexer
-              postgresql:
-                version: "14"
-                parameters: {}
-              # Specify these using overrides
-              # volume:
-              #   size: 8Gi
-              #   storageClass: openebs-hostpath
-              # resources:
-              #   requests:
-              #     cpu: 100m
-              #     memory: 2Gi
-              #   limits:
-              #     cpu: 1000m
-              #     memory: 4Gi
-              patroni:
-                initdb:
-                  encoding: "UTF8"
-                  locale: "C" # Improves performance and important for determinism
+      - &launchpad-default-release-values-postgresql-cr {}
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
@@ -94,3 +25,10 @@ templates:
     # version: 4.2.1
     valuesTemplate:
       - &launchpad-default-release-values-graph-node {}
+
+  launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
+    <<: *launchpad-release-template-defaults
+    chart: graph-network-indexer-chart-dev/graph-network-indexer
+    # version: 4.2.1
+    valuesTemplate:
+      - &launchpad-default-release-values-graph-network-indexer {}
