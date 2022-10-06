@@ -24,7 +24,7 @@ templates:
   launchpad-release-template-openebs-rawfile-localpv: &launchpad-release-template-openebs-rawfile-localpv
     <<: *launchpad-release-template-defaults
     chart: graphops/openebs-rawfile-localpv
-    version: 0.7.0 # Specify the version by pinning the git repo reference in repositories above
+    version: 0.8.0 # Specify the version by pinning the git repo reference in repositories above
     valuesTemplate:
       - &launchpad-default-release-values-openebs-rawfile-localpv {}
 
