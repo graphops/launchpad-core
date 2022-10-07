@@ -6,6 +6,8 @@ repositories:
     url: https://charts.deliveryhero.io
   - name: graphops
     url: https://graphops.github.io/helm-charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
