@@ -40,7 +40,6 @@ tasks:
   deps:
     desc: 'Installs all external dependencies using package manager'
     cmds:
-      - task: deps:brew-status
       - task: deps:ansible
       - task: deps:helm
       - task: deps:helmfile
