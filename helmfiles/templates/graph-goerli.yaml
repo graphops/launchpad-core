@@ -10,7 +10,7 @@ repositories:
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
-    namespace: indexer
+    namespace: graph-goerli
     missingFileHandler: Warn
   launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
     <<: *launchpad-release-template-defaults
