@@ -12,7 +12,7 @@ templates:
   launchpad-release-template-nethermind-gnosis-mainnet: &launchpad-release-template-nethermind-gnosis-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/nethermind
-    version: 0.1.3
+    version: 0.1.4
 
   launchpad-release-template-proxyd-gnosis-mainnet: &launchpad-release-template-proxyd-gnosis-mainnet
     <<: *launchpad-release-template-defaults
