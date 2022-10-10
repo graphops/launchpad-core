@@ -21,7 +21,7 @@ tasks:
     cmds:
       - git remote add upstream-starter https://github.com/graphops/launchpad-starter || true && echo "OK"
       - |
-        if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Exiting..." && exit 1; fi
+        if [[ `git status --porcelain --untracked-files=no` ]]; then echo "You have uncommitted changes! Please commit or reset before continuing. Exiting..." && exit 1; fi
       - git status
       - |
         TEXT="
