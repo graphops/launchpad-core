@@ -13,28 +13,8 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: graphops/nethermind
     version: 0.1.3
-    valuesTemplate:
-      - &launchpad-default-release-values-nethermind-gnosis-mainnet
-        prometheus:
-          serviceMonitors:
-            enabled: true
-        grafana:
-          dashboards: true
-        nethermind:
-          restoreSnapshot:
-            mode: "multipart"
-          extraArgs:
-            - --config=xdai_archive
-            - --JsonRpc.EnabledModules=Eth,Trace,TxPool,Web3,Personal,Proof,Net,Parity,Health,Rpc
 
   launchpad-release-template-proxyd-gnosis-mainnet: &launchpad-release-template-proxyd-gnosis-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
     version: 0.1.7
-    valuesTemplate:
-      - &launchpad-default-release-values-proxyd-gnosis-mainnet
-        prometheus:
-          serviceMonitors:
-            enabled: true
-        grafana:
-          dashboards: true

@@ -13,37 +13,13 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
     version: 0.3.5
-    valuesTemplate:
-      - &launchpad-default-release-values-erigon-eth-goerli
-        statefulNode:
-          extraArgs:
-            - --network=goerli
-        prometheus:
-          serviceMonitors:
-            enabled: true
-        grafana:
-          dashboards: true
 
   launchpad-release-template-nimbus-eth-goerli: &launchpad-release-template-nimbus-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/nimbus
     version: 0.1.1
-    valuesTemplate:
-      - &launchpad-default-release-values-nimbus-eth-goerli
-        prometheus:
-          serviceMonitors:
-            enabled: true
-        grafana:
-          dashboards: true
 
   launchpad-release-template-proxyd-eth-goerli: &launchpad-release-template-proxyd-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
     version: 0.1.7
-    valuesTemplate:
-      - &launchpad-default-release-values-proxyd-eth-goerli
-        prometheus:
-          serviceMonitors:
-            enabled: true
-        grafana:
-          dashboards: true

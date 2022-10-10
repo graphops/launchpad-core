@@ -18,74 +18,28 @@ templates:
     namespace: &template-default-storage-namespace-name storage
     chart: openebs/openebs
     version: 3.3.0
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs {}
 
   launchpad-release-template-openebs-rawfile-localpv: &launchpad-release-template-openebs-rawfile-localpv
     <<: *launchpad-release-template-defaults
     chart: graphops/openebs-rawfile-localpv
     version: 0.8.0
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs-rawfile-localpv {}
 
   launchpad-release-template-openebs-rawfile-storageclass: &launchpad-release-template-openebs-rawfile-storageclass
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.2.0
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs-rawfile-storageclass
-        resources:
-          openebs-rawfile-localpv: &launchpad-default-release-values-openebs-rawfile-storageclass-resource
-            apiVersion: storage.k8s.io/v1
-            kind: StorageClass
-            metadata:
-              name: openebs-rawfile-localpv
-              annotations:
-                storageclass.kubernetes.io/is-default-class: "true"
-            volumeBindingMode: WaitForFirstConsumer
-            provisioner: rawfile.csi.openebs.io
-            parameters: {}
 
   launchpad-release-template-openebs-zfs-localpv: &launchpad-release-template-openebs-zfs-localpv
     <<: *launchpad-release-template-defaults
     chart: openebs-zfs-localpv/zfs-localpv
     version: 2.1.0
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs-zfs-localpv
-        analytics:
-          enabled: false
-        zfsNode:
-          kubeletDir: /var/lib/k0s/kubelet/
 
   launchpad-release-template-openebs-zfs-storageclass: &launchpad-release-template-openebs-zfs-storageclass
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.2.0
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs-zfs-storageclass
-        resources:
-          openebs-zfs-localpv-compressed-32k: &launchpad-default-release-values-openebs-zfs-storageclass-resource
-            apiVersion: storage.k8s.io/v1
-            kind: StorageClass
-            metadata:
-              name: openebs-zfs-localpv-compressed-32k
-            volumeBindingMode: WaitForFirstConsumer
-            parameters: # https://github.com/openebs/zfs-localpv/blob/develop/docs/storageclasses.md
-              recordsize: "32k"
-              compression: "on"
-              dedup: "off"
-              fstype: "zfs"
-              poolname: "zpool1"
-              thinProvision: "yes"
-            provisioner: zfs.csi.openebs.io
 
   launchpad-release-template-openebs-monitoring: &launchpad-release-template-openebs-monitoring
     <<: *launchpad-release-template-defaults
     chart: openebs-monitoring/openebs-monitoring
     version: 0.4.10
-    valuesTemplate:
-      - &launchpad-default-release-values-openebs-rawfile-localpv
-        kube-prometheus-stack:
-          install: false
-        node-problem-detector:
-          install: false

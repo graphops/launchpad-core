@@ -16,19 +16,13 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.2.0
-    valuesTemplate:
-      - &launchpad-default-release-values-postgresql-cr {}
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
     chart: graph-node-chart-dev/graph-node
     # version: 4.2.1
-    valuesTemplate:
-      - &launchpad-default-release-values-graph-node {}
 
   launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
     <<: *launchpad-release-template-defaults
     chart: graph-network-indexer-chart-dev/graph-network-indexer
     # version: 4.2.1
-    valuesTemplate:
-      - &launchpad-default-release-values-graph-network-indexer {}

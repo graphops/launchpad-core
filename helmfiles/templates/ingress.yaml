@@ -14,7 +14,3 @@ templates:
     <<: *launchpad-release-template-defaults
     chart: ingress-nginx/ingress-nginx
     version: 4.3.0
-    labels:
-      component: ingress-nginx
-    valuesTemplate:
-      - &launchpad-default-release-values-ingress-nginx {}
