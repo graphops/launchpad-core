@@ -4,14 +4,13 @@ TAG="$1"; shift
 
 set -ex
 
-if [ -z "$TAG" ]; then
-    echo "Missing tag arg"
-    exit 1
-fi
-
 git checkout release/v1
 git merge main
-git tag $TAG
-git push origin --tags
+
+if [ -n "$TAG" ]; then
+    git tag $TAG
+    git push origin --tags
+fi
+
 git push origin release/v1
 git checkout main
