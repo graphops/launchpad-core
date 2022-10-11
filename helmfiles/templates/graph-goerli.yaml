@@ -2,10 +2,6 @@
 repositories:
   - name: graphops
     url: https://graphops.github.io/helm-charts
-  - name: graph-node-chart-dev
-    url: git+https://github.com/graphops/helm-charts@charts?ref=feature/graph-node
-  - name: graph-network-indexer-chart-dev
-    url: git+https://github.com/graphops/helm-charts@charts?ref=graph-network-indexer/init
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
@@ -19,10 +15,15 @@ templates:
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
-    chart: graph-node-chart-dev/graph-node
-    # version: 4.2.1
+    chart: graphops/graph-node
+    version: 0.1.0
 
   launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
     <<: *launchpad-release-template-defaults
-    chart: graph-network-indexer-chart-dev/graph-network-indexer
-    # version: 4.2.1
+    chart: graphops/graph-network-indexer
+    version: 0.1.0
+
+  launchpad-release-template-graph-toolbox: &launchpad-release-template-graph-toolbox
+    <<: *launchpad-release-template-defaults
+    chart: graphops/graph-toolbox
+    version: 0.1.0
