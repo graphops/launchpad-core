@@ -12,6 +12,7 @@ vars:
 
 tasks:
   ansible:
+    interactive: true
     cmds: 
       - |
         apt update 
@@ -23,6 +24,7 @@ tasks:
     interactive: true
     cmds:
       - |
+        cd $(mktemp)
         apt-get install wget
         wget https://get.helm.sh/helm-v{{.HELM_VERSION}}-linux-amd64.tar.gz
         tar xvf helm-v{{.HELM_VERSION}}-linux-amd64.tar.gz
@@ -30,15 +32,19 @@ tasks:
 
 
   helmfile:
+    interactive: true
     cmds:
       - |
+        cd $(mktemp)
         wget https://github.com/helmfile/helmfile/releases/download/v{{.HELMFILE_VERSION}}/helmfile_{{.HELMFILE_VERSION}}_linux_amd64.tar.gz
         tar xvf helmfile_{{.HELMFILE_VERSION}}_linux_amd64.tar.gz
         mv helmfile /usr/local/bin
 
   kubectl:
+    interactive: true
     cmds:
       - |
+        cd $(mktemp)
         curl -LO "https://dl.k8s.io/release/{{.KUBECTL_VERSION}}/bin/linux/amd64/kubectl" #todo add support for specific version
         curl -LO "https://dl.k8s.io/{{.KUBECTL_VERSION}}/bin/linux/amd64/kubectl.sha256" # download the kubectl checksum file
         echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check # validate checksum against binary
@@ -49,39 +55,49 @@ tasks:
         fi
 
   kubeseal:
+    interactive: true
     cmds:
       - |
+        cd $(mktemp)
         wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{.KUBESEAL_VERSION}}/kubeseal-{{.KUBESEAL_VERSION}}-linux-amd64.tar.gz
         tar xfz kubeseal-{{.KUBESEAL_VERSION}}-linux-amd64.tar.gz
         sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 
   jq:
+    interactive: true
     cmds:
       - apt install --yes jq
 
   octant:
+    interactive: true
     cmds:
       - |
+        cd $(mktemp)
         wget https://github.com/vmware-tanzu/octant/releases/download/v{{.OCTANT_VERSION}}/octant_{{.OCTANT_VERSION}}_Linux-64bit.deb
         dpkg -i octant_{{.OCTANT_VERSION}}_Linux-64bit.deb
 
   k9s:
+    interactive: true
     cmds:
       - |
+        cd $(mktemp)
         wget https://github.com/derailed/k9s/releases/download/v{{.K9S_VERSION}}/k9s_Linux_x86_64.tar.gz
         tar xfz k9s_Linux_x86_64.tar.gz
         mv k9s /usr/local/bin
   
   gum:
+    interactive: true
     cmds:
       - |
         echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
         sudo apt update && sudo apt install gum
   
   helm-git:
+    interactive: true
     cmds:
       - helm plugin install https://github.com/aslafy-z/helm-git || echo "OK"
    
   helm-diff:
+    interactive: true
     cmds:
       - helm plugin install https://github.com/databus23/helm-diff || echo "OK"

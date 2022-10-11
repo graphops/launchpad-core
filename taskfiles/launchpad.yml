@@ -51,3 +51,4 @@ tasks:
       - task: deps:octant
       - task: deps:k9s
       - task: deps:helm-git
+      - task: deps:helm-diff
