@@ -6,20 +6,15 @@ repositories:
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
-    namespace: eth-mainnet
+    namespace: polygon-mainnet
     missingFileHandler: Warn
 
-  launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
+  launchpad-release-template-erigon-polygon-mainnet: &launchpad-release-template-erigon-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
     version: 0.3.7
 
-  launchpad-release-template-nimbus-eth-mainnet: &launchpad-release-template-nimbus-eth-mainnet
-    <<: *launchpad-release-template-defaults
-    chart: graphops/nimbus
-    version: 0.1.1
-
-  launchpad-release-template-proxyd-eth-mainnet: &launchpad-release-template-proxyd-eth-mainnet
+  launchpad-release-template-proxyd-polygon-mainnet: &launchpad-release-template-proxyd-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
     version: 0.1.7
