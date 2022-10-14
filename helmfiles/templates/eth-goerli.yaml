@@ -12,12 +12,12 @@ templates:
   launchpad-release-template-erigon-eth-goerli: &launchpad-release-template-erigon-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.3.7
+    version: 0.3.8
 
   launchpad-release-template-nimbus-eth-goerli: &launchpad-release-template-nimbus-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/nimbus
-    version: 0.1.1
+    version: 0.1.2
 
   launchpad-release-template-proxyd-eth-goerli: &launchpad-release-template-proxyd-eth-goerli
     <<: *launchpad-release-template-defaults
