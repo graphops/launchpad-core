@@ -17,4 +17,4 @@ templates:
   launchpad-release-template-proxyd-polygon-mainnet: &launchpad-release-template-proxyd-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/proxyd
-    version: 0.1.7
+    version: 0.1.8
