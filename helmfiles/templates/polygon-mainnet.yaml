@@ -12,7 +12,7 @@ templates:
   launchpad-release-template-erigon-polygon-mainnet: &launchpad-release-template-erigon-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.3.8
+    version: 0.3.9
 
   launchpad-release-template-proxyd-polygon-mainnet: &launchpad-release-template-proxyd-polygon-mainnet
     <<: *launchpad-release-template-defaults
