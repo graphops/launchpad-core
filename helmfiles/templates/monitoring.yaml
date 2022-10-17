@@ -18,7 +18,7 @@ templates:
   launchpad-release-template-kube-prometheus-stack: &launchpad-release-template-kube-prometheus-stack
     <<: *launchpad-release-template-defaults
     chart: prometheus-community/kube-prometheus-stack
-    version: 39.9.0
+    version: 41.3.2
     disableValidationOnInstall: true # For CRDs https://github.com/helmfile/helmfile/blob/main/pkg/state/state.go#L236
     valuesTemplate: # carefully review https://github.com/notevery/kube-prometheus-stack/blob/main/values.yaml
       - &launchpad-default-release-values-kube-prometheus-stack # TODO Enable scrape annotations on objects, disable grafana auth
