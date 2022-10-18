@@ -24,7 +24,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         apt-get install wget
         wget https://get.helm.sh/helm-v{{.HELM_VERSION}}-linux-amd64.tar.gz
         tar xvf helm-v{{.HELM_VERSION}}-linux-amd64.tar.gz
@@ -35,7 +35,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         wget https://github.com/helmfile/helmfile/releases/download/v{{.HELMFILE_VERSION}}/helmfile_{{.HELMFILE_VERSION}}_linux_amd64.tar.gz
         tar xvf helmfile_{{.HELMFILE_VERSION}}_linux_amd64.tar.gz
         mv helmfile /usr/local/bin
@@ -44,7 +44,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         curl -LO "https://dl.k8s.io/release/{{.KUBECTL_VERSION}}/bin/linux/amd64/kubectl" #todo add support for specific version
         curl -LO "https://dl.k8s.io/{{.KUBECTL_VERSION}}/bin/linux/amd64/kubectl.sha256" # download the kubectl checksum file
         echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check # validate checksum against binary
@@ -58,7 +58,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{.KUBESEAL_VERSION}}/kubeseal-{{.KUBESEAL_VERSION}}-linux-amd64.tar.gz
         tar xfz kubeseal-{{.KUBESEAL_VERSION}}-linux-amd64.tar.gz
         sudo install -m 755 kubeseal /usr/local/bin/kubeseal
@@ -72,7 +72,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         wget https://github.com/vmware-tanzu/octant/releases/download/v{{.OCTANT_VERSION}}/octant_{{.OCTANT_VERSION}}_Linux-64bit.deb
         dpkg -i octant_{{.OCTANT_VERSION}}_Linux-64bit.deb
 
@@ -95,9 +95,21 @@ tasks:
   helm-git:
     interactive: true
     cmds:
-      - helm plugin install https://github.com/aslafy-z/helm-git || echo "OK"
+      - |
+        helm plugin list | grep 'helm-git' &> /dev/null
+        if [ $? == 0 ]; then
+          helm plugin install https://github.com/aslafy-z/helm-git || echo "OK"
+        else
+         echo "Plugin already exists skipping"
+        fi
    
   helm-diff:
     interactive: true
     cmds:
-      - helm plugin install https://github.com/databus23/helm-diff || echo "OK"
+      - |
+        helm plugin list | grep 'diff' &> /dev/null
+        if [ $? == 0 ]; then
+          helm plugin install https://github.com/databus23/helm-diff || echo "OK"
+        else
+         echo "Plugin already exists skipping"
+        fi
