@@ -4,40 +4,63 @@
 # to prompt the user for hostname
 - hosts: localhost
   gather_facts: yes
-  vars_prompt:
-  - name: target_host
-    prompt: "Specify which node to upgrade:"
-    private: no
 
   tasks:
-    - add_host:
-        name: "{{ target_host }}"
-        groups: dynamically_created_hosts
+  - name: get hosts
+    local_action:
+      module: shell
+      _raw_params: "kubectl --kubeconfig $KUBECONFIG get nodes"
+    become: false
+    register: k0s_workers
 
-    - set_fact:
-        target_host: "{{ target_host }}"
+  - name: verbose
+    ansible.builtin.debug:
+     msg:
+      - "The following playbook allows you to upgrade the k0s version on nodes safely and one at a time"
+      - "Make sure you first update the k0s_version variable value in your inventory."
+      - "If you are upgrading a k0s controller node check inventory for the desired hostname."
+      - "The k0s worker nodes in your current cluster are:"
+
+  - name: nodes
+    ansible.builtin.debug:
+     msg:
+      - "{{ item }}"
+    with_items: "{{ k0s_workers.stdout_lines }}"
+
+  - name: Prompt for target_host
+    pause:
+      prompt: "Specify which node to upgrade:"
+      echo: yes
+    register: target_host
     
+  - add_host:
+      name: "{{ target_host.user_input }}"
+      groups: dynamically_created_hosts
+
+  - set_fact:
+      target_host: "{{ target_host.user_input }}"
+
 # End of inventory on the fly block
 
-    - name: drain node
-      local_action:
-        module: shell
-        _raw_params: "kubectl --kubeconfig $KUBECONFIG drain {{ target_host }} --force --ignore-daemonsets --delete-emptydir-data"
-      become: false
-      register: node_drain_out
+  - name: drain node
+    local_action:
+      module: shell
+      _raw_params: "kubectl --kubeconfig $KUBECONFIG drain {{ target_host }} --force --ignore-daemonsets --delete-emptydir-data"
+    become: false
+    register: node_drain_out
 
-    - name: set k8s_version_upgrade_eviction_seconds fact
-      set_fact:
-        k8s_version_upgrade_eviction_seconds: 45
-      run_once: true
-      when: k8s_version_upgrade_eviction_seconds is undefined
+  - name: set k8s_version_upgrade_eviction_seconds fact
+    set_fact:
+      k8s_version_upgrade_eviction_seconds: 45
+    run_once: true
+    when: k8s_version_upgrade_eviction_seconds is undefined
 
-    - name: allow some time for the evictions
-      pause:
-        seconds: "{{ k8s_version_upgrade_eviction_seconds }}"
+  - name: allow some time for the evictions
+    pause:
+      seconds: "{{ k8s_version_upgrade_eviction_seconds }}"
 
 - hosts: dynamically_created_hosts
-  name: "Upgrading k0s version to {{ k0s_version }}"
+  name: "Upgrading k0s version"
   become: yes
   tasks:
     - shell: k0s stop
@@ -63,5 +86,3 @@
       module: shell
       _raw_params: "kubectl --kubeconfig $KUBECONFIG uncordon {{ target_host }}"
     become: false
-
-    
