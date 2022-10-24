@@ -80,7 +80,7 @@ tasks:
     interactive: true
     cmds:
       - |
-        cd $(mktemp)
+        cd $(mktemp -d)
         wget https://github.com/derailed/k9s/releases/download/v{{.K9S_VERSION}}/k9s_Linux_x86_64.tar.gz
         tar xfz k9s_Linux_x86_64.tar.gz
         mv k9s /usr/local/bin
