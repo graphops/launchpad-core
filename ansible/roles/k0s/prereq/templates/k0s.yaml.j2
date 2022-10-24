@@ -4,33 +4,33 @@ metadata:
   name: k0s
 spec:
   api:
-  {% if lb_address %}
+{% if enable_ha_mode %}
     externalAddress: {{ lb_address }}
     sans:
     - {{ lb_address }}
-  {% endif %}
+{% endif %}
     address: {{ ansible_default_ipv4.address }}
     port: 6443
     k0sApiPort: 9443
-  {% if not lb_address %}
+{% if not enable_ha_mode %}
     sans:
     - {{ ansible_default_ipv4.address }}
     - 10.244.0.1
     tunneledNetworkingMode: false
-  {% endif %}
+{% endif %}
   storage:
     etcd:
       peerAddress: {{ ansible_default_ipv4.address }}
       externalCluster: null
     type: etcd
-  {% if not lb_address %}
+{% if not enable_ha_mode %}
   network:
     calico: null
     clusterDomain: cluster.local
     dualStack: {}
     kubeProxy:
       mode: iptables
-  {% elif lb_address %}
+{% elif enable_ha_mode %}
   network:
     podCIDR: 10.244.0.0/16
     serviceCIDR: 10.96.0.0/12
@@ -42,7 +42,7 @@ spec:
       peerRouterIPs: ""
       peerRouterASNs: ""
       autoMTU: true
-  {% endif %}
+{% endif %}
   podSecurityPolicy:
     defaultPolicy: 00-k0s-privileged
   telemetry:
@@ -90,8 +90,8 @@ spec:
     agentPort: 8132
     adminPort: 8133
   workerProfiles:
-    - name: custom-feature-gate      
-      values:
-        featureGates:        
-          GRPCContainerProbe: true
-          TopologyAwareHints: true
+  - name: custom-role
+    values:
+      key: featureGates
+      mapping:
+        innerKey: "GRPCContainerProbe=true,TopologyAwareHints=true"
