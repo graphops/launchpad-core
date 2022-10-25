@@ -9,6 +9,11 @@ templates:
     namespace: eth-mainnet
     missingFileHandler: Warn
 
+  launchpad-release-template-resource-injector: &launchpad-release-template-resource-injector
+    <<: *launchpad-release-template-defaults
+    chart: graphops/resource-injector
+    version: 0.2.0
+
   launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon

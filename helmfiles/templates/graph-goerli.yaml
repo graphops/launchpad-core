@@ -8,7 +8,8 @@ templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
     namespace: graph-goerli
     missingFileHandler: Warn
-  launchpad-release-template-postgresql-cr: &launchpad-release-template-postgresql-cr
+
+  launchpad-release-template-resource-injector: &launchpad-release-template-resource-injector
     <<: *launchpad-release-template-defaults
     chart: graphops/resource-injector
     version: 0.2.0

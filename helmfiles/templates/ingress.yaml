@@ -4,13 +4,26 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: vouch
     url: https://vouch.github.io/helm-charts/
+  - name: jetstack
+    url: https://charts.jetstack.io
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
     namespace: ingress
     missingFileHandler: Warn
+
+  launchpad-release-template-resource-injector: &launchpad-release-template-resource-injector
+    <<: *launchpad-release-template-defaults
+    chart: graphops/resource-injector
+    version: 0.2.0
+
   launchpad-release-template-ingress-nginx: &launchpad-release-template-ingress-nginx
     <<: *launchpad-release-template-defaults
     chart: ingress-nginx/ingress-nginx
     version: 4.3.0
+
+  launchpad-release-template-cert-manager: &launchpad-release-template-cert-manager
+    <<: *launchpad-release-template-defaults
+    chart: jetstack/cert-manager
+    version: v1.10.0

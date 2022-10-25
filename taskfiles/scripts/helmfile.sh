@@ -33,7 +33,7 @@ if [ "$LAUNCHPAD_VERBOSE_LOGS" = "true" ]; then
     DEBUG_LOGS="--debug"
 fi
 
-if [ "$NAMESPACE" = "sealed-secrets" ] && ["$COMMAND" != "status"]; then
+if [ "$NAMESPACE" = "sealed-secrets" ] && [ "$COMMAND" != "status" ]; then
     TEXT="You are about to modify the $NAMESPACE namespace.
 
 Deleting the sealed-secrets controller will render all existing SealedSecrets invalid.

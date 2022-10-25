@@ -9,6 +9,11 @@ templates:
     namespace: eth-goerli
     missingFileHandler: Warn
 
+  launchpad-release-template-resource-injector: &launchpad-release-template-resource-injector
+    <<: *launchpad-release-template-defaults
+    chart: graphops/resource-injector
+    version: 0.2.0
+
   launchpad-release-template-erigon-eth-goerli: &launchpad-release-template-erigon-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon

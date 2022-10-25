@@ -14,6 +14,12 @@ templates:
   launchpad-release-template-defaults: &launchpad-release-template-defaults
     namespace: storage
     missingFileHandler: Warn
+
+  launchpad-release-template-resource-injector: &launchpad-release-template-resource-injector
+    <<: *launchpad-release-template-defaults
+    chart: graphops/resource-injector
+    version: 0.2.0
+
   launchpad-release-template-openebs: &launchpad-release-template-openebs
     namespace: &template-default-storage-namespace-name storage
     chart: openebs/openebs
@@ -24,20 +30,10 @@ templates:
     chart: graphops/openebs-rawfile-localpv
     version: 0.8.0
 
-  launchpad-release-template-openebs-rawfile-storageclass: &launchpad-release-template-openebs-rawfile-storageclass
-    <<: *launchpad-release-template-defaults
-    chart: graphops/resource-injector
-    version: 0.2.0
-
   launchpad-release-template-openebs-zfs-localpv: &launchpad-release-template-openebs-zfs-localpv
     <<: *launchpad-release-template-defaults
     chart: openebs-zfs-localpv/zfs-localpv
     version: 2.1.0
-
-  launchpad-release-template-openebs-zfs-storageclass: &launchpad-release-template-openebs-zfs-storageclass
-    <<: *launchpad-release-template-defaults
-    chart: graphops/resource-injector
-    version: 0.2.0
 
   launchpad-release-template-openebs-monitoring: &launchpad-release-template-openebs-monitoring
     <<: *launchpad-release-template-defaults
