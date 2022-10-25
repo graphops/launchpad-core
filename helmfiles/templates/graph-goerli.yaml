@@ -22,7 +22,7 @@ templates:
   launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
     <<: *launchpad-release-template-defaults
     chart: graphops/graph-network-indexer
-    version: 0.1.0
+    version: 0.1.1
 
   launchpad-release-template-graph-toolbox: &launchpad-release-template-graph-toolbox
     <<: *launchpad-release-template-defaults
