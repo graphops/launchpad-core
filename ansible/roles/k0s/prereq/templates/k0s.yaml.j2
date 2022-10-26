@@ -4,6 +4,8 @@ metadata:
   name: k0s
 spec:
   api:
+    extraArgs:
+      feature-gates: "TopologyAwareHints=true"
 {% if enable_ha_mode %}
     externalAddress: {{ lb_address }}
     sans:
@@ -18,6 +20,9 @@ spec:
     - 10.244.0.1
     tunneledNetworkingMode: false
 {% endif %}
+  controllerManager:
+    extraArgs:
+      feature-gates: "TopologyAwareHints=true"
   storage:
     etcd:
       peerAddress: {{ ansible_default_ipv4.address }}
@@ -64,7 +69,7 @@ spec:
       version: v0.6.1
     kubeproxy:
       image: k8s.gcr.io/kube-proxy
-      version: v1.25.2
+      version: v1.24.6
     coredns:
       image: docker.io/coredns/coredns
       version: 1.7.0
@@ -90,8 +95,7 @@ spec:
     agentPort: 8132
     adminPort: 8133
   workerProfiles:
-  - name: custom-role
+  - name: custom-feature-gate
     values:
-      key: featureGates
-      mapping:
-        innerKey: "GRPCContainerProbe=true,TopologyAwareHints=true"
+      featureGates:
+        TopologyAwareHints: "true"

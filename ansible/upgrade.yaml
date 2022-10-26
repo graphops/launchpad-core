@@ -6,28 +6,28 @@
   gather_facts: yes
 
   tasks:
-  - name: Get list of k0s workers hosts
+  - name: get hosts
     local_action:
       module: shell
-      _raw_params: "kubectl --kubeconfig $KUBECONFIG get nodes"
+      _raw_params:  "kubectl --kubeconfig $KUBECONFIG get nodes"
     become: false
     register: k0s_workers
 
-  - name: Descriptions
+  - name: verbose
     ansible.builtin.debug:
-     msg:
+     msg: 
       - "The following playbook allows you to upgrade the k0s version on nodes safely and one at a time"
       - "Make sure you first update the k0s_version variable value in your inventory."
       - "If you are upgrading a k0s controller node check inventory for the desired hostname."
       - "The k0s worker nodes in your current cluster are:"
 
-  - name: List nodes
+  - name: nodes
     ansible.builtin.debug:
-     msg:
+     msg: 
       - "{{ item }}"
     with_items: "{{ k0s_workers.stdout_lines }}"
 
-  - name: Prompt for target_host
+  - name: target_host
     pause:
       prompt: "Specify which node to upgrade:"
       echo: yes
@@ -39,23 +39,26 @@
 
   - set_fact:
       target_host: "{{ target_host.user_input }}"
-
+  
 # End of inventory on the fly block
+  - ansible.builtin.debug:
+     msg: 
+      - "{{ target_host }}"
 
-  - name: Drain/cordon node
+  - name: drain node
     local_action:
       module: shell
-      _raw_params: "kubectl --kubeconfig $KUBECONFIG drain {{ target_host }} --force --ignore-daemonsets --delete-emptydir-data"
+      _raw_params: "kubectl --kubeconfig $KUBECONFIG drain {{ target_host }} --disable-eviction=true --force --ignore-daemonsets --delete-emptydir-data"
     become: false
     register: node_drain_out
 
-  - name: Set k8s_version_upgrade_eviction_seconds fact
+  - name: set k8s_version_upgrade_eviction_seconds fact
     set_fact:
       k8s_version_upgrade_eviction_seconds: 45
     run_once: true
     when: k8s_version_upgrade_eviction_seconds is undefined
 
-  - name: Allow some time for the evictions
+  - name: allow some time for the evictions
     pause:
       seconds: "{{ k8s_version_upgrade_eviction_seconds }}"
 
@@ -73,7 +76,7 @@
       tags: download
 
 - hosts: dynamically_created_hosts
-  name: Start the k0s service
+  name: start the k0s service
   become: yes
   tasks:
     - shell: k0s start 
@@ -81,7 +84,10 @@
 - hosts: localhost
   gather_facts: yes
   tasks:
-  - name: Uncordon node
+  - name: Sleep for 30 seconds to give k0s a chance to start up
+    ansible.builtin.wait_for:
+     timeout: 30
+  - name: uncordon node
     local_action:
       module: shell
       _raw_params: "kubectl --kubeconfig $KUBECONFIG uncordon {{ target_host }}"
