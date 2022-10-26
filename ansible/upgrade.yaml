@@ -9,7 +9,7 @@
   - name: get hosts
     local_action:
       module: shell
-      _raw_params:  "kubectl --kubeconfig $KUBECONFIG get nodes"
+      _raw_params: "kubectl --kubeconfig $KUBECONFIG get nodes"
     become: false
     register: k0s_workers
 
@@ -23,7 +23,7 @@
 
   - name: nodes
     ansible.builtin.debug:
-     msg: 
+     msg:
       - "{{ item }}"
     with_items: "{{ k0s_workers.stdout_lines }}"
 
@@ -42,7 +42,7 @@
   
 # End of inventory on the fly block
   - ansible.builtin.debug:
-     msg: 
+     msg:
       - "{{ target_host }}"
 
   - name: drain node

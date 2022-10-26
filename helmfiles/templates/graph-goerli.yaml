@@ -15,7 +15,7 @@ templates:
 
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
-    chart: ../../../helm-charts/charts/graph-node
+    chart: graphops/graph-node
     version: 0.1.1
 
   launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
