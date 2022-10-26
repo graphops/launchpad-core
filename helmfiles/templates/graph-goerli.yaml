@@ -17,7 +17,7 @@ templates:
   launchpad-release-template-graph-node: &launchpad-release-template-graph-node
     <<: *launchpad-release-template-defaults
     chart: graphops/graph-node
-    version: 0.1.0
+    version: 0.1.1
 
   launchpad-release-template-graph-network-indexer: &launchpad-release-template-graph-network-indexer
     <<: *launchpad-release-template-defaults
