@@ -15,7 +15,7 @@
 
   - name: verbose
     ansible.builtin.debug:
-     msg: 
+     msg:
       - "The following playbook allows you to upgrade the k0s version on nodes safely and one at a time"
       - "Make sure you first update the k0s_version variable value in your inventory."
       - "If you are upgrading a k0s controller node check inventory for the desired hostname."
@@ -39,7 +39,7 @@
 
   - set_fact:
       target_host: "{{ target_host.user_input }}"
-  
+
 # End of inventory on the fly block
   - ansible.builtin.debug:
      msg:
