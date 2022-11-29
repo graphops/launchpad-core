@@ -13,6 +13,12 @@
     - "{{ k0s_data_dir }}"
     - "{{ k0s_libexec_dir }}"
 
+- name: Set ipv4_public_address variable value
+  command: 'curl --silent v4.ident.me'
+  register : ipv4_public_address
+
+- debug: msg="{{ipv4_public_address.stdout}}"
+
 - name: Write the custom k0s config file
   ansible.builtin.template:
     src: k0s.yaml.j2

@@ -5,14 +5,14 @@ metadata:
 spec:
   api:
     externalAddress: {{ lb_address }}
-    address: {{ ansible_default_ipv4.address }}
+    address: {{ ipv4_public_address }}
     port: 6443
     k0sApiPort: 9443
     sans:
     - {{ lb_address }}
   storage:
     etcd:
-      peerAddress: {{ ansible_default_ipv4.address }}
+      peerAddress: {{ ipv4_public_address }}
       externalCluster: null
     type: etcd
   network:
