@@ -1,0 +1,21 @@
+---
+- hosts: k0s
+  name: Logrotate k0s systemd unit logs 
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: logrotate
+  vars:
+    logrotate_frequency: daily
+    logrotate_keep: 7
+    logrotate_compress: yes
+    logrotate_entries:
+      - name: k0s
+        path: "/var/log/k0s/*"
+        missingok: yes
+        frequency: 7
+        create: yes
+        create_mode: "0660"
+        create_user: root
+        create_group: utmp
+        keep: 1
