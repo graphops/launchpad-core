@@ -41,7 +41,7 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: manage_zfs | creating mirror/raidz zpool(s)
-  command: "zpool create {{ '-o' if zfs_pool_options else '' }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
+  command: "zpool create {{ '-o' if zfs_pool_options else '' }} {{ zfs_pool_options | join(' -o ') }} {{ item.name }} {{ item.type }} {{ item.devices|join (' ') }}"
   with_items: "{{ zfs_pools }}"
   register: zpool_created
   when: >

@@ -98,9 +98,9 @@ tasks:
       - |
         helm plugin list | grep 'helm-git' &> /dev/null
         if [ $? == 0 ]; then
-          helm plugin install https://github.com/aslafy-z/helm-git || echo "OK"
+          echo "Plugin already exists skipping"
         else
-         echo "Plugin already exists skipping"
+          helm plugin install https://github.com/aslafy-z/helm-git || echo "OK"
         fi
    
   helm-diff:
@@ -109,7 +109,7 @@ tasks:
       - |
         helm plugin list | grep 'diff' &> /dev/null
         if [ $? == 0 ]; then
-          helm plugin install https://github.com/databus23/helm-diff || echo "OK"
+          echo "Plugin already exists skipping"
         else
-         echo "Plugin already exists skipping"
+          helm plugin install https://github.com/databus23/helm-diff || echo "OK"
         fi
