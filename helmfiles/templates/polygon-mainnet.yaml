@@ -14,10 +14,15 @@ templates:
     chart: graphops/resource-injector
     version: 0.2.0
 
+  launchpad-release-template-heimdall-polygon-mainnet: &launchpad-release-template-heimdall-polygon-mainnet
+    <<: *launchpad-release-template-defaults
+    chart: graphops/heimdall
+    version: 1.1.0
+
   launchpad-release-template-erigon-polygon-mainnet: &launchpad-release-template-erigon-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-    version: 0.3.12
+    version: 0.3.14
 
   launchpad-release-template-proxyd-polygon-mainnet: &launchpad-release-template-proxyd-polygon-mainnet
     <<: *launchpad-release-template-defaults
