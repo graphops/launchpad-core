@@ -17,11 +17,7 @@ templates:
   launchpad-release-template-erigon-eth-mainnet: &launchpad-release-template-erigon-eth-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/erigon
-<<<<<<< HEAD
-    version: 0.3.12
-=======
     version: 0.3.14
->>>>>>> main
 
   launchpad-release-template-nimbus-eth-mainnet: &launchpad-release-template-nimbus-eth-mainnet
     <<: *launchpad-release-template-defaults
