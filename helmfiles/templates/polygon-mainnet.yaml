@@ -17,7 +17,7 @@ templates:
   launchpad-release-template-heimdall-polygon-mainnet: &launchpad-release-template-heimdall-polygon-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/heimdall
-    version: 1.1.0
+    version: 1.1.1
 
   launchpad-release-template-erigon-polygon-mainnet: &launchpad-release-template-erigon-polygon-mainnet
     <<: *launchpad-release-template-defaults
