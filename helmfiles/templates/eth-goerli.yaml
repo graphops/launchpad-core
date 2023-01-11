@@ -22,7 +22,7 @@ templates:
   launchpad-release-template-nimbus-eth-goerli: &launchpad-release-template-nimbus-eth-goerli
     <<: *launchpad-release-template-defaults
     chart: graphops/nimbus
-    version: 0.1.4
+    version: 0.3.0
 
   launchpad-release-template-proxyd-eth-goerli: &launchpad-release-template-proxyd-eth-goerli
     <<: *launchpad-release-template-defaults
