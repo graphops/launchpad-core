@@ -19,10 +19,10 @@ templates:
     chart: graphops/nethermind
     version: 0.2.0
 
-  launchpad-release-template-nimbus-gnosis-mainnet: &launchpad-release-template-nimbus-gnosis-mainnet
+  launchpad-release-template-lighthouse-gnosis-mainnet: &launchpad-release-template-lighthouse-gnosis-mainnet
     <<: *launchpad-release-template-defaults
-    chart: graphops/nimbus
-    version: 0.3.0
+    chart: graphops/lighthouse
+    version: 0.1.0
 
   launchpad-release-template-proxyd-gnosis-mainnet: &launchpad-release-template-proxyd-gnosis-mainnet
     <<: *launchpad-release-template-defaults
