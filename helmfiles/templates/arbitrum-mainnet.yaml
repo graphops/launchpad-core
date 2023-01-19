@@ -17,12 +17,12 @@ templates:
   launchpad-release-template-arbitrum-nitro-mainnet: &launchpad-release-template-arbitrum-nitro-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/arbitrum-nitro
-    version: 0.1.0
+    version: 0.1.1
 
   launchpad-release-template-arbitrum-classic-mainnet: &launchpad-release-template-arbitrum-classic-mainnet
     <<: *launchpad-release-template-defaults
     chart: graphops/charts/arbitrum-classic
-    version: 0.1.0
+    version: 0.1.1
 
   launchpad-release-template-proxyd-arbitrum-mainnet: &launchpad-release-template-proxyd-arbitrum-mainnet
     <<: *launchpad-release-template-defaults
