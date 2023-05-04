@@ -22,4 +22,4 @@ We welcome and appreciate your contributions! Please see the [Contributor Guide]
 ## See also
 
 - [`graphops/launchpad-core`](https://github.com/graphops/launchpad-core)
-- [`graphops/helm-charts`](https://github.com/graphops/helm-charts)
+- [`graphops/launchpad-charts`](https://github.com/graphops/launchpad-charts)

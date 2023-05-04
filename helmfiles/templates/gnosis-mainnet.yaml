@@ -1,7 +1,7 @@
 # Repositories for Charts used for Releases in this namespace
 repositories:
   - name: graphops
-    url: https://graphops.github.io/helm-charts
+    url: https://graphops.github.io/launchpad-charts
 
 # Anchors for each default release definition, their default values, and any inner resources that are relevant
 templates:
