@@ -5,7 +5,7 @@ repositories:
   - name: deliveryhero
     url: https://charts.deliveryhero.io
   - name: graphops
-    url: https://graphops.github.io/helm-charts
+    url: https://graphops.github.io/launchpad-charts
   - name: grafana
     url: https://grafana.github.io/helm-charts
 
