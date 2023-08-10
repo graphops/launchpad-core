@@ -2,7 +2,9 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-**WARNING: Launchpad is ALPHA quality software. We are rapidly iterating to create the best UX for Indexers. Expect API-breaking changes for the next few weeks. Contributors are very welcome.**
+## Deprecated
+
+Note: `launchpad-core` has been deprecated in favour of [`launchpad-namespaces`](https://github.com/graphops/launchpad-namespaces). See our [documentation](https://docs.graphops.xyz/launchpad/intro) for more information.
 
 ## Introduction
 
